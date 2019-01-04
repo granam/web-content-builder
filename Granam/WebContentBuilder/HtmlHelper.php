@@ -13,26 +13,7 @@ class HtmlHelper extends StrictObject
 
     public const INVISIBLE_ID_CLASS = 'invisible-id';
     public const DATA_ORIGINAL_ID = 'data-original-id';
-    public const EXTERNAL_URL_CLASS = 'external-url';
     public const INTERNAL_URL_CLASS = 'internal-url';
-    public const COVERED_BY_CODE_CLASS = 'covered-by-code';
-    public const EXCLUDED_CLASS = 'excluded';
-    public const HIDDEN_CLASS = 'hidden';
-    public const INVISIBLE_CLASS = 'invisible';
-    public const META_REDIRECT_ID = 'meta_redirect';
-    public const CONTENT_CLASS = 'content';
-    public const DATA_CACHE_STAMP = 'data-cache-stamp';
-    public const DATA_CACHED_AT = 'data-cached-at';
-
-    /**
-     * Turn link into local version
-     * @param string $link
-     * @return string
-     */
-    public static function turnToLocalLink(string $link): string
-    {
-        return \preg_replace('~https?://((?:[^.]+[.])*)drdplus\.info~', 'http://$1drdplus.loc', $link);
-    }
 
     /** @var Dirs */
     private $dirs;
