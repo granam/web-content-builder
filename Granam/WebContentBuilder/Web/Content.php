@@ -11,7 +11,7 @@ use Granam\Strict\Object\StrictObject;
 class Content extends StrictObject implements StringInterface
 {
     /** @var HtmlHelper */
-    private $htmlHelper;
+    protected $htmlHelper;
     /** @var Head */
     private $head;
     /** @var Body */
