@@ -213,7 +213,7 @@ class HtmlHelper extends StrictObject
         $element->setAttribute($attributeName, $link . '?version=' . \urlencode($hash));
     }
 
-    private function isLinkExternal(string $link): bool
+    protected function isLinkExternal(string $link): bool
     {
         $urlParts = \parse_url($link);
 
