@@ -16,6 +16,11 @@ class Dirs extends StrictObject
     /** @var string */
     private $cssRoot;
 
+    public static function createFromGlobals()
+    {
+        return new static($GLOBALS['documentRoot'] ?? $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'] ?? getcwd());
+    }
+
     public function __construct(string $documentRoot)
     {
         $this->documentRoot = $documentRoot;
