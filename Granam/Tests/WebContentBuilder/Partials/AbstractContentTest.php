@@ -77,13 +77,13 @@ abstract class AbstractContentTest extends TestWithMockery
     {
         static $libraryChecked;
         if ($libraryChecked === null) {
-            $documentRootRealPath = \realpath($this->getDocumentRoot());
-            self::assertNotEmpty($documentRootRealPath, 'Can not find out real path of document root ' . \var_export($this->getDocumentRoot(), true));
+            $projectRootRealPath = \realpath($this->getProjectRoot());
+            self::assertNotEmpty($projectRootRealPath, 'Can not find out real path of project root ' . \var_export($this->getProjectRoot(), true));
             $libraryDocumentRootRealPath = \realpath(__DIR__ . '/../../../..');
             self::assertNotEmpty($libraryDocumentRootRealPath, 'Can not find out real path of library root ' . \var_export($libraryDocumentRootRealPath, true));
-            self::assertRegExp('~^web-content-builder$~', \basename($libraryDocumentRootRealPath), 'Expected different trailing dir of web content builder document root');
+            self::assertRegExp('~^web-content-builder$~', \basename($libraryDocumentRootRealPath), 'Expected different trailing dir of web content builder project root');
 
-            $libraryChecked = $documentRootRealPath === $libraryDocumentRootRealPath;
+            $libraryChecked = $projectRootRealPath === $libraryDocumentRootRealPath;
         }
 
         return $libraryChecked;
@@ -92,13 +92,13 @@ abstract class AbstractContentTest extends TestWithMockery
     protected function getDirs(): Dirs
     {
         if (!$this->dirs) {
-            $this->dirs = new Dirs($this->getDocumentRoot());
+            $this->dirs = new Dirs($this->getProjectRoot());
         }
 
         return $this->dirs;
     }
 
-    protected function getDocumentRoot(): string
+    protected function getProjectRoot(): string
     {
         static $masterDocumentRoot;
         if ($masterDocumentRoot === null) {

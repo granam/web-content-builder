@@ -8,7 +8,9 @@ use Granam\Strict\Object\StrictObject;
 class Dirs extends StrictObject
 {
     /** @var string */
-    private $documentRoot;
+    private $projectRoot;
+    /** @var string */
+    private $webRoot;
     /** @var string */
     private $vendorRoot;
     /** @var string */
@@ -21,30 +23,30 @@ class Dirs extends StrictObject
         return new static($GLOBALS['documentRoot'] ?? $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'] ?? getcwd());
     }
 
-    public function __construct(string $documentRoot)
+    public function __construct(string $projectRoot)
     {
-        $this->documentRoot = $documentRoot;
-        $this->populateSubRoots($documentRoot);
+        $this->projectRoot = $projectRoot;
+        $this->populateSubRoots($projectRoot);
     }
 
     private function populateSubRoots(string $documentRoot): void
     {
+        $this->webRoot = $documentRoot . '/web';
         $this->vendorRoot = $documentRoot . '/vendor';
         $this->jsRoot = $documentRoot . '/js';
         $this->cssRoot = $documentRoot . '/css';
     }
 
-    /**
-     * @return string
-     */
-    public function getDocumentRoot(): string
+    public function getProjectRoot(): string
     {
-        return $this->documentRoot;
+        return $this->projectRoot;
     }
 
-    /**
-     * @return string
-     */
+    public function getWebRoot(): string
+    {
+        return $this->webRoot;
+    }
+
     public function getVendorRoot(): string
     {
         return $this->vendorRoot;

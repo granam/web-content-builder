@@ -209,7 +209,7 @@ class HtmlHelper extends StrictObject
 
     public function addVersionHashToAssets(HtmlDocument $htmlDocument): void
     {
-        $documentRoot = $this->dirs->getDocumentRoot();
+        $documentRoot = $this->dirs->getProjectRoot();
         foreach ($htmlDocument->getElementsByTagName('img') as $image) {
             $this->addVersionToAsset($image, 'src', $documentRoot);
         }

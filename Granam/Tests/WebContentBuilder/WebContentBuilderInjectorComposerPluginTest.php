@@ -12,8 +12,8 @@ class WebContentBuilderInjectorComposerPluginTest extends AbstractContentTest
     {
         parent::setUp();
         if (static::$composerConfig === null) {
-            $composerFilePath = $this->getDocumentRoot() . '/composer.json';
-            self::assertFileExists($composerFilePath, 'composer.json has not been found in document root');
+            $composerFilePath = $this->getProjectRoot() . '/composer.json';
+            self::assertFileExists($composerFilePath, 'composer.json has not been found in project root');
             $content = \file_get_contents($composerFilePath);
             self::assertNotEmpty($content, "Nothing has been fetched from $composerFilePath, is readable?");
             static::$composerConfig = \json_decode($content, true /*as array */);
