@@ -38,15 +38,12 @@ class HtmlHelper extends StrictObject
         $this->dirs = $dirs;
     }
 
-    /**
-     * @param HtmlDocument $html
-     */
-    public function addIdsToHeadings(HtmlDocument $html): void
+    public function addIdsToHeadings(HtmlDocument $htmlDocument): HtmlDocument
     {
         $elementNames = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         foreach ($elementNames as $elementName) {
             /** @var Element $headerCell */
-            foreach ($html->getElementsByTagName($elementName) as $headerCell) {
+            foreach ($htmlDocument->getElementsByTagName($elementName) as $headerCell) {
                 if ($headerCell->getAttribute('id')) {
                     continue;
                 }
@@ -64,11 +61,15 @@ class HtmlHelper extends StrictObject
                 $headerCell->setAttribute('id', $id);
             }
         }
+
+        return $htmlDocument;
     }
 
-    public function replaceDiacriticsFromIds(HtmlDocument $html): void
+    public function replaceDiacriticsFromIds(HtmlDocument $htmlDocument): HtmlDocument
     {
-        $this->replaceDiacriticsFromChildrenIds($html->body->children);
+        $this->replaceDiacriticsFromChildrenIds($htmlDocument->body->children);
+
+        return $htmlDocument;
     }
 
     private function replaceDiacriticsFromChildrenIds(HTMLCollection $children): void
@@ -97,9 +98,9 @@ class HtmlHelper extends StrictObject
         return \str_replace('#', '_', $id);
     }
 
-    public function replaceDiacriticsFromAnchorHashes(HtmlDocument $html): void
+    public function replaceDiacriticsFromAnchorHashes(HtmlDocument $htmlDocument): void
     {
-        $this->replaceDiacriticsFromChildrenAnchorHashes($html->getElementsByTagName('a'));
+        $this->replaceDiacriticsFromChildrenAnchorHashes($htmlDocument->getElementsByTagName('a'));
     }
 
     private function replaceDiacriticsFromChildrenAnchorHashes(\Traversable $children): void
@@ -188,7 +189,7 @@ class HtmlHelper extends StrictObject
         }
     }
 
-    public function addVersionHashToAssets(HtmlDocument $htmlDocument): void
+    public function addVersionHashToAssets(HtmlDocument $htmlDocument): HtmlDocument
     {
         $documentRoot = $this->dirs->getProjectRoot();
         foreach ($htmlDocument->getElementsByTagName('img') as $image) {
@@ -200,6 +201,7 @@ class HtmlHelper extends StrictObject
         foreach ($htmlDocument->getElementsByTagName('script') as $script) {
             $this->addVersionToAsset($script, 'src', $documentRoot);
         }
+        return $htmlDocument;
     }
 
     private function addVersionToAsset(Element $element, string $attributeName, string $masterDocumentRoot): void
