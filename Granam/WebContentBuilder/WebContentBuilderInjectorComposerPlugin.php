@@ -48,9 +48,9 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
         if ($this->alreadyInjected || !$this->isThisPackageChanged($event)) {
             return;
         }
-        $documentRoot = $GLOBALS['documentRoot'] ?? getcwd();
-        $this->io->write("Injecting {$this->libraryPackageName} using document root $documentRoot");
-        $this->addVersionsToAssets($documentRoot);
+        $dirs = Dirs::createFromGlobals();
+        $this->io->write("Injecting {$this->libraryPackageName} using document root {$dirs->getDocumentRoot()}");
+        $this->addVersionsToAssets($dirs);
         $this->alreadyInjected = true;
         $this->io->write("Injection of {$this->libraryPackageName} finished");
     }
@@ -75,10 +75,13 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
         return $changedPackageName === $this->libraryPackageName;
     }
 
-    private function addVersionsToAssets(string $documentRoot)
+    private function addVersionsToAssets(Dirs $dirs)
     {
+        if (!\is_dir($dirs->getCssRoot())) {
+            return;
+        }
         $assetsVersion = new AssetsVersion(true, false);
-        $changedFiles = $assetsVersion->addVersionsToAssetLinks($documentRoot, ['css'], [], [], false);
+        $changedFiles = $assetsVersion->addVersionsToAssetLinks($dirs->getDocumentRoot(), [$dirs->getCssRoot()], [], [], false);
         if ($changedFiles) {
             $this->io->write('Those assets got versions to asset links: ' . \implode(', ', $changedFiles));
         }
