@@ -102,7 +102,7 @@ abstract class AbstractContentTest extends TestWithMockery
     {
         static $masterDocumentRoot;
         if ($masterDocumentRoot === null) {
-            $masterDocumentRoot = $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'];
+            $masterDocumentRoot = $GLOBALS['documentRoot'] ?? $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'] ?? getcwd();
         }
 
         return $masterDocumentRoot;
