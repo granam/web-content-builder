@@ -46,7 +46,7 @@ class Content extends StrictObject implements StringInterface
         return $this->htmlDocument;
     }
 
-    private function buildHtmlDocument(string $content): HtmlDocument
+    protected function buildHtmlDocument(string $content): HtmlDocument
     {
         $htmlDocument = new HtmlDocument($content);
         $this->htmlHelper->addIdsToHeadings($htmlDocument);
