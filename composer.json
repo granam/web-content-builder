@@ -21,6 +21,7 @@
     "php": ">=7.1",
     "ext-dom": "*",
     "ext-json": "*",
+    "composer-plugin-api": "^1.1",
     "erusev/parsedown": "^1.7",
     "granam/strict-object": "^3.0",
     "granam/string": "^3.2",

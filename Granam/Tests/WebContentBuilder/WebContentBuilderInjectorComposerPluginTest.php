@@ -45,7 +45,8 @@ class WebContentBuilderInjectorComposerPluginTest extends AbstractContentTest
 
             return;
         }
-        self::assertSame('composer-plugin', static::$composerConfig['type']);
-        self::assertSame(WebContentBuilderInjectorComposerPlugin::class, static::$composerConfig['extra']['class']);
+        self::assertSame('composer-plugin', static::$composerConfig['type'], 'This library should be defined as composer plugin to allow its injection');
+        self::assertSame(WebContentBuilderInjectorComposerPlugin::class, static::$composerConfig['extra']['class'], 'Expected current injector');
+        self::assertArrayHasKey('composer-plugin-api', static::$composerConfig['require'], 'Injection requires composer plugin API package to works');
     }
 }
