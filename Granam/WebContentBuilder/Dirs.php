@@ -20,7 +20,15 @@ class Dirs extends StrictObject
 
     public static function createFromGlobals()
     {
-        return new static($GLOBALS['documentRoot'] ?? $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'] ?? getcwd());
+        $projectRootDir = '';
+        foreach ([$GLOBALS['documentRoot'] ?? '', $_SERVER['PROJECT_DIR'] ?? '', $_SERVER['DOCUMENT_ROOT'] ?? ''] as $candidate) {
+            $projectRootDir = $candidate;
+            if ($projectRootDir !== '') {
+                break;
+            }
+        }
+
+        return new static($projectRootDir !== '' ? $projectRootDir : \getcwd());
     }
 
     public function __construct(string $projectRoot)

@@ -92,7 +92,7 @@ abstract class AbstractContentTest extends TestWithMockery
     protected function getDirs(): Dirs
     {
         if (!$this->dirs) {
-            $this->dirs = new Dirs($this->getProjectRoot());
+            $this->dirs = Dirs::createFromGlobals();
         }
 
         return $this->dirs;
@@ -100,12 +100,7 @@ abstract class AbstractContentTest extends TestWithMockery
 
     protected function getProjectRoot(): string
     {
-        static $masterDocumentRoot;
-        if ($masterDocumentRoot === null) {
-            $masterDocumentRoot = $GLOBALS['documentRoot'] ?? $_SERVER['PROJECT_DIR'] ?? $_SERVER['DOCUMENT_ROOT'] ?? getcwd();
-        }
-
-        return $masterDocumentRoot;
+        return $this->getDirs()->getProjectRoot();
     }
 
     protected function unifyPath(string $path): string

@@ -56,6 +56,8 @@ class DirsTest extends AbstractContentTest
     public function provideProjectRoots(): array
     {
         return [
+            ['SERVER_PROJECT_DIR' => null, 'SERVER_DOCUMENT_ROOT' => '', 'cwd' => __DIR__, __DIR__],
+            ['SERVER_PROJECT_DIR' => '', 'SERVER_DOCUMENT_ROOT' => '', 'cwd' => __DIR__, __DIR__],
             ['SERVER_PROJECT_DIR' => null, 'SERVER_DOCUMENT_ROOT' => null, 'cwd' => __DIR__, __DIR__],
             ['SERVER_PROJECT_DIR' => null, 'SERVER_DOCUMENT_ROOT' => 'foo', 'cwd' => __DIR__, 'foo'],
             ['SERVER_PROJECT_DIR' => 'bar', 'SERVER_DOCUMENT_ROOT' => 'foo', 'cwd' => __DIR__, 'bar'],
