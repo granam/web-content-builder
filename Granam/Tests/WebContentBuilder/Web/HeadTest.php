@@ -29,7 +29,7 @@ class HeadTest extends AbstractContentTest
             $title
         );
         self::assertSame($title, $head->getPageTitle());
-        self::assertContains("<title>$title</title>", $head->getHeadString());
+        self::assertContains("<title>$title</title>", $head->getValue());
     }
 
     protected function getHtmlHelper(): HtmlHelper
@@ -63,7 +63,7 @@ class HeadTest extends AbstractContentTest
             '',
             $faviconUrl
         );
-        self::assertContains("<link rel=\"shortcut icon\" href=\"{$faviconUrl}\">", $head->getHeadString());
+        self::assertContains("<link rel=\"shortcut icon\" href=\"{$faviconUrl}\">", $head->getValue());
     }
 
     /**
@@ -82,11 +82,12 @@ class HeadTest extends AbstractContentTest
             '',
             '123456'
         );
-        $headString = $head->getHeadString();
+        $headString = $head->getValue();
         $htmlDocument = new HtmlDocument(<<<HTML
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<title>Just some title</title>
 {$headString}
 </head>
 </html>

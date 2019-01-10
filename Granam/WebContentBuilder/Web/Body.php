@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace Granam\WebContentBuilder\Web;
 
 use Granam\Strict\Object\StrictObject;
+use Granam\String\StringInterface;
 
-class Body extends StrictObject
+class Body extends StrictObject implements StringInterface
 {
     /** @var WebFiles */
     private $webFiles;
@@ -17,10 +18,10 @@ class Body extends StrictObject
 
     public function __toString()
     {
-        return $this->getBodyString();
+        return $this->getValue();
     }
 
-    public function getBodyString(): string
+    public function getValue(): string
     {
         $content = '';
         foreach ($this->webFiles as $webFile) {

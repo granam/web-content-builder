@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace Granam\WebContentBuilder\Web;
 
+use Granam\String\StringInterface;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\Strict\Object\StrictObject;
 
-class Head extends StrictObject
+class Head extends StrictObject implements StringInterface
 {
     /** @var HtmlHelper */
     private $htmlHelper;
@@ -38,7 +39,12 @@ class Head extends StrictObject
         $this->googleAnalyticsId = $googleAnalyticsId;
     }
 
-    public function getHeadString(): string
+    public function __toString()
+    {
+        return $this->getValue();
+    }
+
+    public function getValue(): string
     {
         $headParts = [];
         if ($this->getPageTitle() !== '') {
