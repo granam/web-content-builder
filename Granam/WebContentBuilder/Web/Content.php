@@ -61,8 +61,8 @@ class Content extends StrictObject implements StringInterface
 
     private function composeContent(): string
     {
-        $head = $this->head->getHeadString();
-        $body = $this->body->getBodyString();
+        $head = $this->head->getValue();
+        $body = $this->body->getValue();
 
         return <<<HTML
 <!DOCTYPE html>
