@@ -11,9 +11,9 @@ use Gt\Dom\HTMLCollection;
 class HtmlHelper extends StrictObject
 {
 
-    public const INVISIBLE_ID_CLASS = 'invisible-id';
+    public const CLASS_INVISIBLE_ID = 'invisible-id';
     public const DATA_ORIGINAL_ID = 'data-original-id';
-    public const INTERNAL_URL_CLASS = 'internal-url';
+    public const CLASS_INTERNAL_URL = 'internal-url';
 
     /** @var Dirs */
     private $dirs;
@@ -89,7 +89,7 @@ class HtmlHelper extends StrictObject
             $child->setAttribute('id', $this->sanitizeId($idWithoutDiacritics));
             $child->appendChild($invisibleId = new Element('span'));
             $invisibleId->setAttribute('id', $this->sanitizeId($id));
-            $invisibleId->className = self::INVISIBLE_ID_CLASS;
+            $invisibleId->className = self::CLASS_INVISIBLE_ID;
         }
     }
 
@@ -148,7 +148,7 @@ class HtmlHelper extends StrictObject
             if (!\in_array($child->nodeName, ['a', 'button'], true)
                 && $child->getAttribute('id')
                 && $child->getElementsByTagName('a')->length === 0 // already have some anchors, skipp it to avoid wrapping them by another one
-                && !$child->prop_get_classList()->contains(self::INVISIBLE_ID_CLASS)
+                && !$child->prop_get_classList()->contains(self::CLASS_INVISIBLE_ID)
             ) {
                 $toMove = [];
                 /** @var \DOMElement $grandChildNode */
@@ -181,7 +181,7 @@ class HtmlHelper extends StrictObject
         /** @var Element $anchor */
         foreach ($htmlDocument->getElementsByTagName('a') as $anchor) {
             if (!$anchor->getAttribute('target')
-                && !$anchor->classList->contains(self::INTERNAL_URL_CLASS)
+                && !$anchor->classList->contains(self::CLASS_INTERNAL_URL)
                 && \preg_match('~^(https?:)?//[^#]~', $anchor->getAttribute('href') ?? '')
             ) {
                 $anchor->setAttribute('target', '_blank');
@@ -201,6 +201,7 @@ class HtmlHelper extends StrictObject
         foreach ($htmlDocument->getElementsByTagName('script') as $script) {
             $this->addVersionToAsset($script, 'src', $documentRoot);
         }
+
         return $htmlDocument;
     }
 
@@ -225,8 +226,9 @@ class HtmlHelper extends StrictObject
     private function getAbsolutePath(string $relativePath, string $masterDocumentRoot): string
     {
         $relativePath = \ltrim($relativePath, '\\/');
+        $absolutePath = $masterDocumentRoot . '/' . $relativePath;
 
-        return $masterDocumentRoot . '/' . $relativePath;
+        return \str_replace('/./', '/', $absolutePath);
     }
 
     private function getFileHash(string $fileName): string
