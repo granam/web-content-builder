@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 namespace Granam\WebContentBuilder\Web;
 
-use Granam\String\StringInterface;
 use Granam\WebContentBuilder\HtmlDocument;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\Strict\Object\StrictObject;
 
-class Content extends StrictObject implements StringInterface
+class Content extends StrictObject implements HtmlContentInterface
 {
     /** @var HtmlHelper */
     protected $htmlHelper;
