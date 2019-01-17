@@ -12,14 +12,14 @@ class Content extends StrictObject implements StringInterface
 {
     /** @var HtmlHelper */
     protected $htmlHelper;
-    /** @var Head */
+    /** @var HeadInterface */
     private $head;
-    /** @var Body */
+    /** @var BodyInterface */
     private $body;
     /** @var HtmlDocument */
     private $htmlDocument;
 
-    public function __construct(HtmlHelper $htmlHelper, Head $head, Body $body)
+    public function __construct(HtmlHelper $htmlHelper, HeadInterface $head, BodyInterface $body)
     {
         $this->htmlHelper = $htmlHelper;
         $this->head = $head;

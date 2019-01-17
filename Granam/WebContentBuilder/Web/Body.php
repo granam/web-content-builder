@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Granam\WebContentBuilder\Web;
 
 use Granam\Strict\Object\StrictObject;
-use Granam\String\StringInterface;
 
-class Body extends StrictObject implements StringInterface
+class Body extends StrictObject implements BodyInterface
 {
     /** @var WebFiles */
     private $webFiles;

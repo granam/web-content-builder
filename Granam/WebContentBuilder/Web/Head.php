@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Granam\WebContentBuilder\Web;
 
-use Granam\String\StringInterface;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\Strict\Object\StrictObject;
 
-class Head extends StrictObject implements StringInterface
+class Head extends StrictObject implements HeadInterface
 {
     /** @var HtmlHelper */
     private $htmlHelper;
