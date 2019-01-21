@@ -98,26 +98,33 @@ class HtmlHelper extends StrictObject
         return \str_replace('#', '_', $id);
     }
 
-    public function replaceDiacriticsFromAnchorHashes(HtmlDocument $htmlDocument): void
+    public function replaceDiacriticsFromAnchorHashes(
+        HtmlDocument $htmlDocument,
+        string $includingUrlPattern = null,
+        string $excludingUrlPattern = null
+    ): HtmlDocument
     {
-        $this->replaceDiacriticsFromChildrenAnchorHashes($htmlDocument->getElementsByTagName('a'));
+        $this->replaceDiacriticsFromChildrenAnchorHashes(
+            $htmlDocument->getElementsByTagName('a'),
+            $includingUrlPattern,
+            $excludingUrlPattern
+        );
+
+        return $htmlDocument;
     }
 
-    private function replaceDiacriticsFromChildrenAnchorHashes(\Traversable $children): void
+    private function replaceDiacriticsFromChildrenAnchorHashes(
+        \Traversable $anchors,
+        ?string $includingUrlPattern,
+        ?string $excludingUrlPattern
+    ): void
     {
-        /** @var Element $child */
-        foreach ($children as $child) {
+        /** @var Element $anchor */
+        foreach ($anchors as $anchor) {
             // recursion
-            $this->replaceDiacriticsFromChildrenAnchorHashes($child->children);
-            $href = $child->getAttribute('href');
-            if (!$href) {
-                continue;
-            }
-            $hashPosition = \strpos($href, '#');
-            if ($hashPosition === false) {
-                continue;
-            }
-            $hash = substr($href, $hashPosition + 1);
+            $this->replaceDiacriticsFromChildrenAnchorHashes($anchor->getElementsByTagName('a'), $includingUrlPattern, $excludingUrlPattern);
+            $href = (string)$anchor->getAttribute('href');
+            $hash = $this->parseHash($href, $includingUrlPattern, $excludingUrlPattern);
             if ($hash === '') {
                 continue;
             }
@@ -125,9 +132,31 @@ class HtmlHelper extends StrictObject
             if ($hashWithoutDiacritics === $hash) {
                 continue;
             }
-            $hrefWithoutDiacritics = substr($href, 0, $hashPosition) . '#' . $hashWithoutDiacritics;
-            $child->setAttribute('href', $hrefWithoutDiacritics);
+            $hrefWithoutDiacritics = \str_replace('#' . $hash, '#' . $hashWithoutDiacritics, $href);
+            $anchor->setAttribute('href', $hrefWithoutDiacritics);
         }
+    }
+
+    private function parseHash(string $href, string $urlMatchingPattern = null, string $urlExcludingPattern = null): string
+    {
+        if (!$href) {
+            return '';
+        }
+        $hashPosition = \strpos($href, '#');
+        if ($hashPosition === false) {
+            return '';
+        }
+        if ($urlMatchingPattern !== null || $urlExcludingPattern !== null) {
+            $link = \substr($href, 0, $hashPosition);
+            if ($urlMatchingPattern !== null && !\preg_match($urlMatchingPattern, $link)) {
+                return '';
+            }
+            if ($urlExcludingPattern !== null && \preg_match($urlExcludingPattern, $link)) {
+                return '';
+            }
+        }
+
+        return (string)\substr($href, $hashPosition + 1);
     }
 
     /**
