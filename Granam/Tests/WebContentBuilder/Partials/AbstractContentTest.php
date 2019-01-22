@@ -24,6 +24,16 @@ abstract class AbstractContentTest extends TestWithMockery
         return new HtmlHelper($dirs ?? $this->getDirs());
     }
 
+    protected function getHtmlHelper(): HtmlHelper
+    {
+        static $htmlHelper;
+        if ($htmlHelper === null) {
+            $htmlHelper = $this->createHtmlHelper();
+        }
+
+        return $htmlHelper;
+    }
+
     protected function runCommand(string $command): array
     {
         \exec("$command 2>&1", $output, $returnCode);

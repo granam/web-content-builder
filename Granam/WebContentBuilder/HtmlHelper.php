@@ -159,46 +159,60 @@ class HtmlHelper extends StrictObject
         return (string)\substr($href, $hashPosition + 1);
     }
 
-    /**
-     * @param HtmlDocument $htmlDocument
-     * @return HtmlDocument
-     */
     public function addAnchorsToIds(HtmlDocument $htmlDocument): HtmlDocument
     {
-        $this->addAnchorsToChildrenWithIds($htmlDocument->body->children);
-
-        return $htmlDocument;
-    }
-
-    private function addAnchorsToChildrenWithIds(HTMLCollection $children): void
-    {
-        /** @var Element $child */
-        foreach ($children as $child) {
-            if (!\in_array($child->nodeName, ['a', 'button'], true)
-                && $child->getAttribute('id')
-                && $child->getElementsByTagName('a')->length === 0 // already have some anchors, skipp it to avoid wrapping them by another one
-                && !$child->prop_get_classList()->contains(self::CLASS_INVISIBLE_ID)
+        foreach ($this->getElementsWithId($htmlDocument) as $elementWithId) {
+            if (!\in_array($elementWithId->nodeName, ['a', 'button'], true)
+                && $elementWithId->getElementsByTagName('a')->length === 0 // already have some anchors, skip it to avoid wrapping them by another one
+                && !$elementWithId->prop_get_classList()->contains(self::CLASS_INVISIBLE_ID)
             ) {
                 $toMove = [];
-                /** @var \DOMElement $grandChildNode */
-                foreach ($child->childNodes as $grandChildNode) {
-                    if (!\in_array($grandChildNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
+                /** @var \DOMElement $childNode */
+                foreach ($elementWithId->childNodes as $childNode) {
+                    if (!\in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
                         break;
                     }
-                    $toMove[] = $grandChildNode;
+                    $toMove[] = $childNode;
                 }
-                if (\count($toMove) > 0) {
+                if ($toMove) {
                     $anchorToSelf = new Element('a');
-                    $child->replaceChild($anchorToSelf, $toMove[0]); // pairs anchor with parent element
-                    $anchorToSelf->setAttribute('href', '#' . $child->getAttribute('id'));
+                    $elementWithId->replaceChild($anchorToSelf, $toMove[0]); // pairs anchor with parent element
+                    $anchorToSelf->setAttribute('href', '#' . $elementWithId->getAttribute('id'));
                     foreach ($toMove as $index => $item) {
                         $anchorToSelf->appendChild($item);
                     }
                 }
             }
-            // recursion
-            $this->addAnchorsToChildrenWithIds($child->children);
         }
+
+        return $htmlDocument;
+    }
+
+    /**
+     * @param HtmlDocument $htmlDocument
+     * @return array|Element[]
+     */
+    private function getElementsWithId(HtmlDocument $htmlDocument): array
+    {
+        $elementsWithId = [];
+        foreach ($this->getIds($htmlDocument) as $id) {
+            $elementsWithId[$id] = $htmlDocument->getElementById($id);
+        }
+
+        return $elementsWithId;
+    }
+
+    /**
+     * @param HtmlDocument $htmlDocument
+     * @return array|string[]
+     */
+    private function getIds(HtmlDocument $htmlDocument): array
+    {
+        if (!\preg_match_all('~\Wid\s*=\s*"(?<ids>[^"]+)"~', $htmlDocument->body->prop_get_innerHTML(), $matches)) {
+            return [];
+        }
+
+        return $matches['ids'];
     }
 
     /**

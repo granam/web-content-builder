@@ -47,12 +47,14 @@ class HtmlHelperTest extends AbstractContentTest
         string $expectedLinkWithReplacedHash
     ): void
     {
-        $htmlHelper = $this->createHtmlHelper();
+        $htmlHelper = $this->getHtmlHelper();
         $withReplacedHashes = $htmlHelper->replaceDiacriticsFromAnchorHashes(
             new HtmlDocument(<<<HTML
+<!DOCTYPE html>
 <html lang="en">
 <body>
-<a id="just_some_link" href="{$linkWithHash}">Just some link</a>
+<a id="just_some_link"
+  href="{$linkWithHash}">Just some link</a>
 </body>
 </html>
 HTML
@@ -77,6 +79,51 @@ HTML
             'hash with diacritics and missing match' => ['https://example.com#fůů', '~bar~', null, 'https://example.com#fůů'],
             'hash with diacritics and "including" hash' => ['https://example.com#fůů', '~fůů~', null, 'https://example.com#fůů'],
             'hash with diacritics and "excluding" hash' => ['https://example.com#fůů', null, '~fůů~', 'https://example.com#fuu'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provideHtmlWithId
+     * @param string $topId
+     * @param string $htmlWithId
+     * @param array $expectedAnchors
+     */
+    public function I_can_wrap_id_by_anchor_to_it(string $topId, string $htmlWithId, array $expectedAnchors): void
+    {
+        $htmlHelper = $this->getHtmlHelper();
+        $withAnchorsOnIds = $htmlHelper->addAnchorsToIds(new HtmlDocument(<<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body>
+{$htmlWithId}
+</body>
+</html>
+HTML
+        ));
+        $elementWithId = $withAnchorsOnIds->getElementById($topId);
+        $anchors = $elementWithId->getElementsByTagName('a');
+        self::assertSame(\count($expectedAnchors), \count($anchors), 'Expected different cout of anchors inside ' . $withAnchorsOnIds->saveHTML());
+        foreach ($expectedAnchors as $index => $expectedAnchor) {
+            self::assertSame($expectedAnchor, $anchors[$index]->outerHTML, 'Expected different anchor');
+        }
+    }
+
+    public function provideHtmlWithId(): array
+    {
+        return [
+            'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
+            'div with span with ID' => ['some_id', '<div><span id="some_id">Foo</span></div>', ['<a href="#some_id">Foo</a>']],
+            'div with div with ID and div with span' => [
+                'some_id',
+                '<div><div id="some_id">Foo<span id="another_id">Bar</span></div></div>',
+                ['<a href="#some_id">Foo<span id="another_id"><a href="#another_id">Bar</a></span></a>', '<a href="#another_id">Bar</a>'],
+            ],
+            'table with th with ID' => [
+                'some_id',
+                "<table><thead><th id='some_id'>Foo</th></thead></table>",
+                ['<a href="#some_id">Foo</a>'],
+            ],
         ];
     }
 }
