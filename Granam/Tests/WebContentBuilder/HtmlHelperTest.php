@@ -126,4 +126,31 @@ HTML
             ],
         ];
     }
+
+    /**
+     * @test
+     */
+    public function I_can_replace_diacritics_from_id(): void
+    {
+        $htmlHelper = $this->getHtmlHelper();
+        $withIdsWithoutDiacritics = $htmlHelper->replaceDiacriticsFromIds(new HtmlDocument(<<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div id="Břetislav"><span id="Svíčková s příšernou šlehačkou">Fůůj</span></div>
+</body>
+</html>
+HTML
+        ));
+        $bretislav = $withIdsWithoutDiacritics->getElementById('bretislav');
+        self::assertNotEmpty($bretislav);
+        self::assertSame(
+            <<<'HTML'
+<span id="svickova_s_prisernou_slehackou" data-original-id="Svíčková s příšernou šlehačkou">Fůůj<span id="Svíčková s příšernou šlehačkou" class="invisible-id"></span></span>
+<span id="Břetislav" class="invisible-id"></span>
+HTML
+            ,
+            $bretislav->innerHTML
+        );
+    }
 }

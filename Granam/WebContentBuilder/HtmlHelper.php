@@ -6,7 +6,6 @@ namespace Granam\WebContentBuilder;
 use Granam\Strict\Object\StrictObject;
 use Granam\String\StringTools;
 use Gt\Dom\Element;
-use Gt\Dom\HTMLCollection;
 
 class HtmlHelper extends StrictObject
 {
@@ -67,30 +66,21 @@ class HtmlHelper extends StrictObject
 
     public function replaceDiacriticsFromIds(HtmlDocument $htmlDocument): HtmlDocument
     {
-        $this->replaceDiacriticsFromChildrenIds($htmlDocument->body->children);
-
-        return $htmlDocument;
-    }
-
-    private function replaceDiacriticsFromChildrenIds(HTMLCollection $children): void
-    {
-        foreach ($children as $child) {
-            // recursion
-            $this->replaceDiacriticsFromChildrenIds($child->children);
-            $id = $child->getAttribute('id');
-            if (!$id) {
-                continue;
-            }
+        foreach ($this->getIds($htmlDocument) as $id) {
             $idWithoutDiacritics = static::toId($id);
             if ($idWithoutDiacritics === $id) {
                 continue;
             }
-            $child->setAttribute(self::DATA_ORIGINAL_ID, $id);
-            $child->setAttribute('id', $this->sanitizeId($idWithoutDiacritics));
-            $child->appendChild($invisibleId = new Element('span'));
+            /** @var Element $elementWithId */
+            $elementWithId = $htmlDocument->getElementById($id);
+            $elementWithId->setAttribute(self::DATA_ORIGINAL_ID, $id);
+            $elementWithId->setAttribute('id', $this->sanitizeId($idWithoutDiacritics));
+            $elementWithId->appendChild($invisibleId = new Element('span'));
             $invisibleId->setAttribute('id', $this->sanitizeId($id));
             $invisibleId->className = self::CLASS_INVISIBLE_ID;
         }
+
+        return $htmlDocument;
     }
 
     private function sanitizeId(string $id): string
