@@ -186,7 +186,13 @@ class HtmlHelper extends StrictObject
     {
         $elementsWithId = [];
         foreach ($this->getIds($htmlDocument) as $id) {
-            $elementsWithId[$id] = $htmlDocument->getElementById($id);
+            $elementById = $htmlDocument->getElementById($id);
+            if (!$elementById) {
+                throw new Exceptions\ElementNotFoundById(
+                    \sprintf("No element has been found by ID '%s'", $id)
+                );
+            }
+            $elementsWithId[$id] = $elementById;
         }
 
         return $elementsWithId;
@@ -202,7 +208,7 @@ class HtmlHelper extends StrictObject
             return [];
         }
 
-        return $matches['ids'];
+        return \array_map('html_entity_decode', $matches['ids']);
     }
 
     /**

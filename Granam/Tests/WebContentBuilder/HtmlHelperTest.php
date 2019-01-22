@@ -94,18 +94,22 @@ HTML
         $htmlHelper = $this->getHtmlHelper();
         $withAnchorsOnIds = $htmlHelper->addAnchorsToIds(new HtmlDocument(<<<HTML
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <body>
 {$htmlWithId}
 </body>
 </html>
 HTML
         ));
-        $elementWithId = $withAnchorsOnIds->getElementById($topId);
+        $elementWithId = $withAnchorsOnIds->getElementById(\html_entity_decode($topId));
         $anchors = $elementWithId->getElementsByTagName('a');
         self::assertSame(\count($expectedAnchors), \count($anchors), 'Expected different cout of anchors inside ' . $withAnchorsOnIds->saveHTML());
         foreach ($expectedAnchors as $index => $expectedAnchor) {
-            self::assertSame($expectedAnchor, $anchors[$index]->outerHTML, 'Expected different anchor');
+            self::assertSame(
+                $expectedAnchor,
+                $anchors[$index]->outerHTML,
+                'Expected different anchor from ' . $withAnchorsOnIds->saveHTML()
+            );
         }
     }
 
@@ -123,6 +127,11 @@ HTML
                 'some_id',
                 "<table><thead><th id='some_id'>Foo</th></thead></table>",
                 ['<a href="#some_id">Foo</a>'],
+            ],
+            'div with ID containing encoded HTML entities' => [
+                'Znalost&lt;divočiny&gt;',
+                '<h6 id="Znalost&lt;divočiny&gt;">Znalost&lt;divočiny&gt;</h6>',
+                ['<a href="#Znalost&lt;divo%C4%8Diny&gt;">Znalost&lt;divočiny&gt;</a>'],
             ],
         ];
     }
