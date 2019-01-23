@@ -71,7 +71,7 @@ class Head extends StrictObject implements HeadInterface
         if ($this->googleAnalyticsId) {
             $escapedGoogleAnalyticsId = \htmlspecialchars($this->googleAnalyticsId);
             $renderedJsFiles[] = <<<HTML
-<script async src="https://www.googletagmanager.com/gtag/js?id={$escapedGoogleAnalyticsId}" id="googleAnalyticsId"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={$escapedGoogleAnalyticsId}" id="googleAnalyticsId" data-google-analytics-id="{$escapedGoogleAnalyticsId}"></script>
 HTML;
         }
         foreach ($this->getJsFiles() as $jsFile) {

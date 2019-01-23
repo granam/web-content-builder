@@ -101,5 +101,6 @@ HTML
         $parsed = \parse_url($src);
         $queryString = \urldecode($parsed['query'] ?? '');
         self::assertSame('id=123456', $queryString);
+        self::assertSame('123456', $googleAnalytics->getAttribute('data-google-analytics-id'));
     }
 }
