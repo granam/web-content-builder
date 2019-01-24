@@ -66,13 +66,12 @@ class HtmlHelper extends StrictObject
 
     public function replaceDiacriticsFromIds(HtmlDocument $htmlDocument): HtmlDocument
     {
-        foreach ($this->getIds($htmlDocument) as $id) {
+        foreach ($this->getElementsWithId($htmlDocument) as $id => $elementWithId) {
             $idWithoutDiacritics = static::toId($id);
             if ($idWithoutDiacritics === $id) {
                 continue;
             }
-            /** @var Element $elementWithId */
-            $elementWithId = $htmlDocument->getElementById($id);
+            $elementWithId = $this->getElementWithId($id, $htmlDocument);
             $elementWithId->setAttribute(self::DATA_ORIGINAL_ID, $id);
             $elementWithId->setAttribute('id', $this->sanitizeId($idWithoutDiacritics));
             $elementWithId->appendChild($invisibleId = new Element('span'));
@@ -186,16 +185,23 @@ class HtmlHelper extends StrictObject
     {
         $elementsWithId = [];
         foreach ($this->getIds($htmlDocument) as $id) {
-            $elementById = $htmlDocument->getElementById($id);
-            if (!$elementById) {
-                throw new Exceptions\ElementNotFoundById(
-                    \sprintf("No element has been found by ID '%s'", $id)
-                );
-            }
-            $elementsWithId[$id] = $elementById;
+            $elementsWithId[$id] = $this->getElementWithId($id, $htmlDocument);
         }
 
         return $elementsWithId;
+    }
+
+    private function getElementWithId(string $id, HtmlDocument $htmlDocument): Element
+    {
+        $elementById = $htmlDocument->getElementById($id);
+        if (!$elementById) {
+            throw new Exceptions\ElementNotFoundById(
+                \sprintf("No element has been found by ID '%s'", $id)
+            );
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $elementById;
     }
 
     /**

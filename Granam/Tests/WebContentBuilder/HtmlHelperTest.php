@@ -146,11 +146,13 @@ HTML
 <!DOCTYPE html>
 <html lang="en">
 <body>
+<h1 class="text-to-left">Obsah</h1>
 <div id="Břetislav"><span id="Svíčková s příšernou šlehačkou">Fůůj</span></div>
 </body>
 </html>
 HTML
         ));
+        /** @var Element $bretislav */
         $bretislav = $withIdsWithoutDiacritics->getElementById('bretislav');
         self::assertNotEmpty($bretislav);
         self::assertSame(
@@ -159,7 +161,7 @@ HTML
 <span id="Břetislav" class="invisible-id"></span>
 HTML
             ,
-            $bretislav->innerHTML
+            $bretislav->prop_get_innerHTML()
         );
     }
 }
