@@ -164,4 +164,65 @@ HTML
             $bretislav->prop_get_innerHTML()
         );
     }
+
+    /**
+     * @test
+     * @dataProvider provideHtmlWithIds
+     * @param string $content
+     * @param string|null $expectedId
+     */
+    public function I_can_get_first_id_in_any_element(string $content, ?string $expectedId): void
+    {
+        $html = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body>
+$content
+</body>
+</html>
+HTML;
+        $htmlHelper = $this->getHtmlHelper();
+        $element = (new HtmlDocument($html))->body->firstElementChild;
+        self::assertSame($expectedId, $htmlHelper->getFirstIdFrom($element));
+    }
+
+    public function provideHtmlWithIds(): array
+    {
+        return [
+            'first-class ID' => [
+                '<div id="first">Foo
+<div id="middle">
+
+Bar
+<span id="last">LAST</span>
+</div>',
+                'first',
+            ],
+            'in-the-middle ID' => [
+                '<div>Foo
+<div id="middle">
+
+Bar
+<span id="last">LAST</span>
+</div>',
+                'middle',
+            ],
+            'last ID' => ['<div>Foo
+<div>
+
+Bar
+<span id="last">LAST</span>
+</div>',
+                'last',
+            ],
+            'none' => ['<div>Foo
+<div>
+
+Bar
+<span>LAST</span>
+</div>',
+                null,
+            ],
+        ];
+    }
 }

@@ -280,4 +280,20 @@ class HtmlHelper extends StrictObject
     {
         return \md5_file($fileName) ?: (string)\time(); // time is a fallback
     }
+
+    public function getFirstIdFrom(Element $element): ?string
+    {
+        $id = (string)$element->getAttribute('id');
+        if ($id !== '') {
+            return $id;
+        }
+        foreach ($element->children as $child) {
+            $id = $this->getFirstIdFrom($child);
+            if ($id !== null) {
+                return $id;
+            }
+        }
+
+        return null;
+    }
 }
