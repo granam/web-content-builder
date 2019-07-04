@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Granam\Tests\WebContentBuilder;
 
@@ -139,10 +138,10 @@ HTML
     /**
      * @test
      */
-    public function I_can_replace_diacritics_from_id(): void
+    public function I_can_replace_diacritics_from_ids(): void
     {
         $htmlHelper = $this->getHtmlHelper();
-        $withIdsWithoutDiacritics = $htmlHelper->replaceDiacriticsFromIds(new HtmlDocument(<<<HTML
+        $withIdsWithoutDiacritics = $htmlHelper->unifyIds(new HtmlDocument(<<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <body>
@@ -162,6 +161,53 @@ HTML
 HTML
             ,
             $bretislav->prop_get_innerHTML()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function I_can_unify_for_in_labels(): void
+    {
+        $htmlHelper = $this->getHtmlHelper();
+        $withUnifiedFor = $htmlHelper->unifyForInLabels(new HtmlDocument(<<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<h1 class="text-to-left">Obsah</h1>
+<div id="standardIds">
+  <label for="deadlyLiving">Human</label>
+  <div id="deadlyLiving">Walking dude</div>
+</div>
+<div id="czech">
+  <label for="Křivule po srovnání">Nakřivo</label>
+  <div id="Křivule po srovnání">Srovnej si to</div>
+</div>
+</body>
+</html>
+HTML
+        ));
+        /** @var Element $standardIds */
+        $standardIds = $withUnifiedFor->getElementById('standardIds');
+        self::assertNotEmpty($standardIds);
+        self::assertSame(
+            <<<'HTML'
+<label for="deadly_living" data-original-for="deadlyLiving">Human</label>
+<div id="deadlyLiving">Walking dude</div>
+HTML
+            ,
+            preg_replace('~(\s*\n\s*)+~', "\n", trim($standardIds->prop_get_innerHTML()))
+        );
+        /** @var Element $czech */
+        $czech = $withUnifiedFor->getElementById('czech');
+        self::assertNotEmpty($czech);
+        self::assertSame(
+            <<<'HTML'
+<label for="krivule_po_srovnani" data-original-for="Křivule po srovnání">Nakřivo</label>
+<div id="Křivule po srovnání">Srovnej si to</div>
+HTML
+            ,
+            preg_replace('~(\s*\n\s*)+~', "\n", trim($czech->prop_get_innerHTML()))
         );
     }
 
