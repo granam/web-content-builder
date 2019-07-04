@@ -49,7 +49,6 @@ class Content extends StrictObject implements HtmlContentInterface
         $htmlDocument = new HtmlDocument($content);
         $this->htmlHelper->addIdsToHeadings($htmlDocument);
         $this->htmlHelper->unifyIds($htmlDocument);
-        $this->htmlHelper->unifyForInLabels($htmlDocument);
         $this->htmlHelper->replaceDiacriticsFromAnchorHashes($htmlDocument);
         $this->htmlHelper->addAnchorsToIds($htmlDocument);
         $this->htmlHelper->externalLinksTargetToBlank($htmlDocument);

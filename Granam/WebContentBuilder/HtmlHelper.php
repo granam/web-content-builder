@@ -66,6 +66,14 @@ class HtmlHelper extends StrictObject
 
     public function unifyIds(HtmlDocument $htmlDocument): HtmlDocument
     {
+        $htmlDocument = $this->unifyIdsOnly($htmlDocument);
+        $htmlDocument = $this->unifyForInLabels($htmlDocument);
+
+        return $htmlDocument;
+    }
+
+    private function unifyIdsOnly(HtmlDocument $htmlDocument): HtmlDocument
+    {
         foreach ($this->getElementsWithId($htmlDocument) as $id => $elementWithId) {
             $idWithoutDiacritics = static::toId($id);
             if ($idWithoutDiacritics === $id) {
@@ -88,7 +96,7 @@ class HtmlHelper extends StrictObject
         return str_replace('#', '_', $id);
     }
 
-    public function unifyForInLabels(HtmlDocument $htmlDocument): HtmlDocument
+    private function unifyForInLabels(HtmlDocument $htmlDocument): HtmlDocument
     {
         foreach ($this->getLabelsWithFor($htmlDocument) as $id => $labelWithFor) {
             $idWithoutDiacritics = static::toId($id);
