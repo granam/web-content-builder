@@ -11,7 +11,7 @@ class HtmlHelper extends StrictObject
 
     public const CLASS_INVISIBLE_ID = 'invisible-id';
     public const CLASS_WITHOUT_ANCHOR_TO_ID = 'without-anchor-to-id';
-    public const CLASS_HEADING_WITHOUT_ID = 'class-heading-without-id';
+    public const CLASS_HEADING_WITHOUT_ID = 'heading-without-id';
     public const DATA_ORIGINAL_ID = 'data-original-id';
     public const DATA_ORIGINAL_FOR = 'data-original-for';
     public const CLASS_INTERNAL_URL = 'internal-url';
