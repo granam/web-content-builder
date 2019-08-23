@@ -24,8 +24,8 @@
     "composer-plugin-api": "^1.1",
     "erusev/parsedown": "^1.7",
     "granam/string": "^4.0",
-    "phpgt/dom": "^1.1",
-    "piwik/device-detector": "^3.11"
+    "phpgt/dom": "^2.1",
+    "piwik/device-detector": "^3.12"
   },
   "require-dev": {
     "composer/composer": "^1.7",
