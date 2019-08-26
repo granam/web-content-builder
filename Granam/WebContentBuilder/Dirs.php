@@ -36,12 +36,32 @@ class Dirs extends StrictObject
         $this->populateSubRoots($projectRoot);
     }
 
-    private function populateSubRoots(string $documentRoot): void
+    protected function populateSubRoots(string $projectRoot)
     {
-        $this->webRoot = $documentRoot . '/web';
-        $this->vendorRoot = $documentRoot . '/vendor';
-        $this->jsRoot = $documentRoot . '/js';
-        $this->cssRoot = $documentRoot . '/css';
+        $this->populateWebRoot($projectRoot);
+        $this->populateVendorRoot($projectRoot);
+        $this->populateJsRoot($projectRoot);
+        $this->populateCssRoot($projectRoot);
+    }
+
+    protected function populateWebRoot(string $projectRoot)
+    {
+        $this->webRoot = $projectRoot . '/web';
+    }
+
+    protected function populateVendorRoot(string $projectRoot)
+    {
+        $this->vendorRoot = $projectRoot . '/vendor';
+    }
+
+    protected function populateJsRoot(string $projectRoot)
+    {
+        $this->jsRoot = $projectRoot . '/js';
+    }
+
+    protected function populateCssRoot(string $projectRoot)
+    {
+        $this->cssRoot = $projectRoot . '/css';
     }
 
     public function getProjectRoot(): string
