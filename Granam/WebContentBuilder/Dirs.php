@@ -33,10 +33,10 @@ class Dirs extends StrictObject
     public function __construct(string $projectRoot)
     {
         $this->projectRoot = $projectRoot;
-        $this->webRoot = $documentRoot . '/web';
-        $this->vendorRoot = $documentRoot . '/vendor';
-        $this->jsRoot = $documentRoot . '/js';
-        $this->cssRoot = $documentRoot . '/css';
+        $this->webRoot = $projectRoot . '/web';
+        $this->vendorRoot = $projectRoot . '/vendor';
+        $this->jsRoot = $projectRoot . '/js';
+        $this->cssRoot = $projectRoot . '/css';
     }
 
     public function getProjectRoot(): string
