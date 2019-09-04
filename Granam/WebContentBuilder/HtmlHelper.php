@@ -201,26 +201,34 @@ class HtmlHelper extends StrictObject
                 && !$elementWithId->prop_get_classList()->contains(self::CLASS_INVISIBLE_ID)
                 && !$elementWithId->prop_get_classList()->contains(self::CLASS_WITHOUT_ANCHOR_TO_ID)
             ) {
-                $toMove = [];
-                /** @var \DOMElement $childNode */
-                foreach ($elementWithId->childNodes as $childNode) {
-                    if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
-                        break;
-                    }
-                    $toMove[] = $childNode;
-                }
-                if ($toMove) {
-                    $anchorToSelf = new Element('a');
-                    $elementWithId->replaceChild($anchorToSelf, $toMove[0]); // pairs anchor with parent element
-                    $anchorToSelf->setAttribute('href', '#' . $id);
-                    foreach ($toMove as $index => $item) {
-                        $anchorToSelf->appendChild($item);
-                    }
-                }
+                $this->wrapById($elementWithId, $id);
             }
         }
 
         return $htmlDocument;
+    }
+
+    private function wrapById(Element $element, string $id)
+    {
+        $toMove = [];
+        $atLeastOneChildHasContent = false;
+        $firstDivWithContent = null;
+        /** @var \DOMElement $childNode */
+        foreach ($element->childNodes as $childNode) {
+            if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
+                break;
+            }
+            $atLeastOneChildHasContent = $atLeastOneChildHasContent || trim($childNode->textContent) !== '';
+            $toMove[] = $childNode;
+        }
+        if ($toMove && $atLeastOneChildHasContent) {
+            $anchorToSelf = new Element('a');
+            $element->replaceChild($anchorToSelf, $toMove[0]); // pairs anchor with parent element
+            $anchorToSelf->setAttribute('href', '#' . $id);
+            foreach ($toMove as $index => $item) {
+                $anchorToSelf->appendChild($item);
+            }
+        }
     }
 
     /**
