@@ -88,8 +88,9 @@ HTML
      * @param string $topId
      * @param string $htmlWithId
      * @param array $expectedAnchors
+     * @param string $expectedHtmlWithId = null
      */
-    public function I_can_wrap_id_by_anchor_to_it(string $topId, string $htmlWithId, array $expectedAnchors): void
+    public function I_can_wrap_id_by_anchor_to_it(string $topId, string $htmlWithId, array $expectedAnchors, string $expectedHtmlWithId = null): void
     {
         $htmlHelper = $this->getHtmlHelper();
         $withAnchorsOnIds = $htmlHelper->addAnchorsToIds(new HtmlDocument(<<<HTML
@@ -110,6 +111,9 @@ HTML
                 $anchors[$index]->outerHTML,
                 'Expected different anchor from ' . $withAnchorsOnIds->saveHTML()
             );
+        }
+        if ($expectedHtmlWithId !== null) {
+            self::assertSame($expectedHtmlWithId, $elementWithId->outerHTML, 'Expected different content');
         }
     }
 
@@ -137,6 +141,12 @@ HTML
                 'some_heading',
                 '<h1 id="some_heading" class="' . HtmlHelper::CLASS_WITHOUT_ANCHOR_TO_ID . '">Some heading</h1>',
                 [],
+            ],
+            'div with content in sub-div' => [
+                'some_div',
+                '<div id="some_div"><div>Some content in sub-div</div></div>',
+                ['<a href="#some_div">Some content in sub-div</a>'],
+                '<div id="some_div"><div><a href="#some_div">Some content in sub-div</a></div></div>',
             ],
         ];
     }
