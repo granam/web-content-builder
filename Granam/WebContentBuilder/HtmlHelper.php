@@ -212,12 +212,12 @@ class HtmlHelper extends StrictObject
     {
         $toMove = [];
         $atLeastOneChildHasContent = false;
-        $divWithContent = null;
+        $nonEmptyBlockChild = null;
         /** @var \DOMElement $childNode */
         foreach ($element->childNodes as $childNode) {
             if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
-                if (!$divWithContent && $childNode->nodeName === 'div' && trim($childNode->textContent) !== '') {
-                    $divWithContent = $childNode;
+                if (!$nonEmptyBlockChild && $this->isNonEmptyBlockElement($childNode)) {
+                    $nonEmptyBlockChild = $childNode;
                 }
                 break;
             }
@@ -231,10 +231,34 @@ class HtmlHelper extends StrictObject
             foreach ($toMove as $index => $item) {
                 $anchorToSelf->appendChild($item);
             }
-        } elseif ($divWithContent) {
+        } elseif ($nonEmptyBlockChild) {
             /** @var $divWithContent Element */
-            $this->wrapById($divWithContent, $id);
+            $this->wrapById($nonEmptyBlockChild, $id);
         }
+    }
+
+    private function isNonEmptyBlockElement(Element $element): bool
+    {
+        return ($element->nodeName === 'div' && trim($element->textContent) !== '')
+            || $this->isOrHasNonEmptyTableHeadCellOrCaption($element);
+    }
+
+    private function isOrHasNonEmptyTableHeadCellOrCaption(Element $element)
+    {
+        return (in_array($element->nodeName, ['th', 'caption'], true) && trim($element->textContent) !== '')
+            || (in_array($element->nodeName, ['table', 'thead', 'tr'], true) && ($this->hasNonEmptyCaption($element) || $this->hasNonEmptySingleHeadCell($element)));
+    }
+
+    private function hasNonEmptyCaption(Element $element): bool
+    {
+        $captions = $element->getElementsByTagName('caption');
+        return count($captions) === 1 && trim($captions[0]->textContent) !== '';
+    }
+
+    private function hasNonEmptySingleHeadCell(Element $element): bool
+    {
+        $tableHeadCells = $element->getElementsByTagName('th');
+        return count($tableHeadCells) === 1 && trim($tableHeadCells[0]->textContent) !== '';
     }
 
     /**

@@ -120,7 +120,7 @@ HTML
     public function provideHtmlWithId(): array
     {
         return [
-            'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
+            /*'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
             'div with span with ID' => ['some_id', '<div><span id="some_id">Foo</span></div>', ['<a href="#some_id">Foo</a>']],
             'div with div with ID and div with span' => [
                 'some_id',
@@ -177,6 +177,35 @@ HTML
 </div>
 HTML
                 ,
+            ],
+            'with single non-empty table head cell' => [
+                'with_single_non_empty_table_head_cell',
+                <<<HTML
+<table id="with_single_non_empty_table_head_cell">
+<thead>
+<tr>
+<th>Inside table head cell</th>
+</tr>
+</thead>
+</table>
+HTML
+                ,
+                ['<a href="#with_single_non_empty_table_head_cell">Inside table head cell</a>'],
+            ],*/
+            'with single non-empty table caption' => [
+                'with_single_non_empty_table_caption',
+                <<<HTML
+<table id="with_single_non_empty_table_caption">
+<caption>Inside caption</caption>
+<thead>
+<tr>
+<th>Inside table head cell</th>
+</tr>
+</thead>
+</table>
+HTML
+                ,
+                ['<a href="#with_single_non_empty_table_caption">Inside caption</a>'],
             ],
         ];
     }
