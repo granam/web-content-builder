@@ -212,12 +212,12 @@ class HtmlHelper extends StrictObject
     {
         $toMove = [];
         $atLeastOneChildHasContent = false;
-        $firstDivWithContent = null;
+        $divWithContent = null;
         /** @var \DOMElement $childNode */
         foreach ($element->childNodes as $childNode) {
             if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
-                if (!$firstDivWithContent && $childNode->nodeName === 'div' && trim($childNode->textContent) !== '') {
-                    $firstDivWithContent = $childNode;
+                if (!$divWithContent && $childNode->nodeName === 'div' && trim($childNode->textContent) !== '') {
+                    $divWithContent = $childNode;
                 }
                 break;
             }
@@ -231,9 +231,9 @@ class HtmlHelper extends StrictObject
             foreach ($toMove as $index => $item) {
                 $anchorToSelf->appendChild($item);
             }
-        } elseif ($firstDivWithContent) {
-            /** @var $firstDivWithContent Element */
-            $this->wrapById($firstDivWithContent, $id);
+        } elseif ($divWithContent) {
+            /** @var $divWithContent Element */
+            $this->wrapById($divWithContent, $id);
         }
     }
 

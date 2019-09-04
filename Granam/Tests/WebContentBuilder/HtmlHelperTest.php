@@ -148,6 +148,36 @@ HTML
                 ['<a href="#some_div">Some content in sub-div</a>'],
                 '<div id="some_div"><div><a href="#some_div">Some content in sub-div</a></div></div>',
             ],
+            'div with content in sub-div but also text content after' => [
+                'some_div_with_sub_sub_div',
+                '<div id="some_div_with_sub_sub_div"><div><div>Some content in sub-sub-div</div></div>Some text after</div>',
+                ['<a href="#some_div_with_sub_sub_div">Some content in sub-sub-div</a>'],
+                <<<HTML
+<div id="some_div_with_sub_sub_div">
+<div><div><a href="#some_div_with_sub_sub_div">Some content in sub-sub-div</a></div></div>Some text after</div>
+HTML
+                ,
+            ],
+            'with white space content only and sub-div with text content' => [
+                'with_white_space_content_and_filled_sub_dir',
+                <<<HTML
+<div id="with_white_space_content_and_filled_sub_dir">    
+
+<div>Some content</div>
+
+</div>
+HTML
+                ,
+                ['<a href="#with_white_space_content_and_filled_sub_dir">Some content</a>'],
+                <<<HTML
+<div id="with_white_space_content_and_filled_sub_dir">    
+
+<div><a href="#with_white_space_content_and_filled_sub_dir">Some content</a></div>
+
+</div>
+HTML
+                ,
+            ],
         ];
     }
 
