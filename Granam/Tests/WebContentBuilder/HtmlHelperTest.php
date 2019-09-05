@@ -93,7 +93,8 @@ HTML
     public function I_can_wrap_id_by_anchor_to_it(string $topId, string $htmlWithId, array $expectedAnchors, string $expectedHtmlWithId = null): void
     {
         $htmlHelper = $this->getHtmlHelper();
-        $withAnchorsOnIds = $htmlHelper->addAnchorsToIds(new HtmlDocument(<<<HTML
+        $withAnchorsOnIds = $htmlHelper->addAnchorsToIds(
+            new HtmlDocument(<<<HTML
 <!DOCTYPE html>
 <html lang="cs">
 <body>
@@ -101,7 +102,8 @@ HTML
 </body>
 </html>
 HTML
-        ));
+            )
+        );
         $elementWithId = $withAnchorsOnIds->getElementById(\html_entity_decode($topId));
         $anchors = $elementWithId->getElementsByTagName('a');
         self::assertSame(\count($expectedAnchors), \count($anchors), 'Expected different count of anchors inside ' . $withAnchorsOnIds->saveHTML());
@@ -120,7 +122,7 @@ HTML
     public function provideHtmlWithId(): array
     {
         return [
-            /*'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
+            'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
             'div with span with ID' => ['some_id', '<div><span id="some_id">Foo</span></div>', ['<a href="#some_id">Foo</a>']],
             'div with div with ID and div with span' => [
                 'some_id',
@@ -191,7 +193,7 @@ HTML
 HTML
                 ,
                 ['<a href="#with_single_non_empty_table_head_cell">Inside table head cell</a>'],
-            ],*/
+            ],
             'with single non-empty table caption' => [
                 'with_single_non_empty_table_caption',
                 <<<HTML
@@ -206,6 +208,42 @@ HTML
 HTML
                 ,
                 ['<a href="#with_single_non_empty_table_caption">Inside caption</a>'],
+            ],
+            'with div and sub-div and table and sub-div' => [
+                'with_div_and_sub_div_and_table_and_sub_div',
+                <<<HTML
+<div class="calculation" id="with_div_and_sub_div_and_table_and_sub_div">
+  <div class="formula">Stabilizace = Zrč + stupeň archetypu + 2k6<span class="upper-index">+</span>:</div>
+  <div>doba: <a href="http://pph.drdplus.loc/#tabulka_casu" target="_blank" class="external-url">2 kola (+6)</a>
+  <table class="result content">
+    <tbody>
+      <tr>
+        <td>méně než 5</td>
+        <td>posun hranice ošetření</td>
+      </tr>
+      <tr>
+        <td>5 až 9</td>
+        <td>
+          nestabilizoval <span class="note">(může zkusit sám znovu, pokud se mu <strong>změní podmínky</strong>, nebo někdo jiný)</span>
+        </td>
+      </tr>
+      <tr>
+        <td>10 až 14</td>
+        <td>stabilizoval</td>
+      </tr>
+      <tr>
+        <td>15+</td>
+        <td>ošetřil</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+HTML
+                ,
+                [
+                    '<a href="#with_div_and_sub_div_and_table_and_sub_div">Stabilizace = Zrč + stupeň archetypu + 2k6<span class="upper-index">+</span>:</a>',
+                    '<a href="http://pph.drdplus.loc/#tabulka_casu" target="_blank" class="external-url">2 kola (+6)</a>'
+                ],
             ],
         ];
     }
@@ -273,7 +311,6 @@ HTML
 </html>
 HTML
         ));
-        $h = $unified->saveHTML();
         /** @var Element $english */
         $english = $unified->getElementById('english');
         self::assertNotEmpty($english);

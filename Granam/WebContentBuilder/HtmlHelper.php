@@ -197,7 +197,6 @@ class HtmlHelper extends StrictObject
     {
         foreach ($this->getElementsWithId($htmlDocument) as $id => $elementWithId) {
             if (!in_array($elementWithId->nodeName, ['a', 'button'], true)
-                && $elementWithId->getElementsByTagName('a')->length === 0 // already have some anchors, skip it to avoid wrapping them by another one
                 && !$elementWithId->prop_get_classList()->contains(self::CLASS_INVISIBLE_ID)
                 && !$elementWithId->prop_get_classList()->contains(self::CLASS_WITHOUT_ANCHOR_TO_ID)
             ) {
@@ -213,7 +212,7 @@ class HtmlHelper extends StrictObject
         $toMove = [];
         $atLeastOneChildHasContent = false;
         $nonEmptyBlockChild = null;
-        /** @var \DOMElement $childNode */
+        /** @var Element $childNode */
         foreach ($element->childNodes as $childNode) {
             if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
                 if (!$nonEmptyBlockChild && $this->isNonEmptyBlockElement($childNode)) {
@@ -232,7 +231,7 @@ class HtmlHelper extends StrictObject
                 $anchorToSelf->appendChild($item);
             }
         } elseif ($nonEmptyBlockChild) {
-            /** @var $divWithContent Element */
+            /** @var Element $divWithContent */
             $this->wrapById($nonEmptyBlockChild, $id);
         }
     }
