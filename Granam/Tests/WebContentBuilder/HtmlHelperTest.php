@@ -79,6 +79,7 @@ HTML
             'hash with diacritics and missing match' => ['https://example.com#fůů', '~bar~', null, 'https://example.com#fůů'],
             'hash with diacritics and "including" hash' => ['https://example.com#fůů', '~fůů~', null, 'https://example.com#fůů'],
             'hash with diacritics and "excluding" hash' => ['https://example.com#fůů', null, '~fůů~', 'https://example.com#fuu'],
+            'hash_with_underscore' => ['#flakonek_02_l', null, null, '#flakonek_02_l'],
         ];
     }
 
@@ -105,6 +106,7 @@ HTML
             )
         );
         $elementWithId = $withAnchorsOnIds->getElementById(\html_entity_decode($topId));
+        self::assertNotEmpty($elementWithId, "No element found by given top ID '$topId'");
         $anchors = $elementWithId->getElementsByTagName('a');
         self::assertSame(\count($expectedAnchors), \count($anchors), 'Expected different count of anchors inside ' . $withAnchorsOnIds->saveHTML());
         foreach ($expectedAnchors as $index => $expectedAnchor) {
@@ -123,6 +125,7 @@ HTML
     {
         return [
             'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
+            'div with numeric part of ID' => ['flakonek_02l', '<div id="flakonek_02l">Flakónek (0.2 l)</div>', ['<a href="#flakonek_02l">Flakónek (0.2 l)</a>']],
             'div with span with ID' => ['some_id', '<div><span id="some_id">Foo</span></div>', ['<a href="#some_id">Foo</a>']],
             'div with div with ID and div with span' => [
                 'some_id',
