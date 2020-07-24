@@ -140,7 +140,7 @@ class AssetsVersion extends StrictObject
         }, $folders);
     }
 
-    private function addVersionsToAssetLinksInContent(string $content, string $documentRootDir, string $sourceFile): string
+    public function addVersionsToAssetLinksInContent(string $content, string $documentRootDir, string $sourceFile): string
     {
         $srcFound = \preg_match_all('~(?<sources>(?:src="[^"]+"|src=\'[^\']+\'))~', $content, $sourceMatches);
         $urlFound = \preg_match_all('~(?<urls>(?:url\((?:(?<!data:)[^)])+\)|url\("(?:(?<!data:)[^)])+"\)|url\(\'(?:(?!data:)[^)])+\'\)))~', $content, $urlMatches);
