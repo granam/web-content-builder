@@ -23,6 +23,7 @@
     "ext-json": "*",
     "composer-plugin-api": "^1.1",
     "erusev/parsedown": "^1.7",
+    "granam/assets-version": "^1.0",
     "granam/string": "^4.0",
     "phpgt/dom": "^2.1",
     "piwik/device-detector": "^3.12"

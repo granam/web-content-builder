@@ -2,6 +2,7 @@
 
 namespace Granam\WebContentBuilder;
 
+use Granam\AssetsVersion\AssetsVersionInjector;
 use Granam\Strict\Object\StrictObject;
 
 class AssetsVersion extends StrictObject
@@ -12,6 +13,8 @@ class AssetsVersion extends StrictObject
     private $scanDirsForHtml;
     /** @var bool */
     private $scanDirsForMarkdown;
+    /** @var AssetsVersionInjector */
+    private $assetsVersionInjector;
 
     public function __construct(bool $scanDirsForCss = null, bool $scanDirsForHtml = null, bool $scanDirsForMd = null)
     {
@@ -27,6 +30,7 @@ class AssetsVersion extends StrictObject
             $this->scanDirsForHtml = $scanDirsForHtml ?? false;
             $this->scanDirsForMarkdown = $scanDirsForMd ?? false;
         }
+        $this->assetsVersionInjector = new AssetsVersionInjector(AssetsVersionInjector::PROBLEM_REPORT_AS_WARNING);
     }
 
     /**
@@ -58,7 +62,7 @@ class AssetsVersion extends StrictObject
                 \trigger_error("File {$confirmedFileToEdit} is empty", E_USER_WARNING);
                 continue;
             }
-            $replacedContent = $this->addVersionsToAssetLinksInContent($content, $documentRootDir, $confirmedFileToEdit);
+            $replacedContent = $this->addVersionsToAssetLinksInContent($content, $documentRootDir);
             if ($replacedContent === $content) {
                 continue;
             }
@@ -140,91 +144,8 @@ class AssetsVersion extends StrictObject
         }, $folders);
     }
 
-    public function addVersionsToAssetLinksInContent(string $content, string $documentRootDir, string $sourceFile): string
+    public function addVersionsToAssetLinksInContent(string $content, string $documentRootDir): string
     {
-        $srcFound = \preg_match_all('~(?<sources>(?:src="[^"]+"|src=\'[^\']+\'))~', $content, $sourceMatches);
-        $urlFound = \preg_match_all('~(?<urls>(?:url\((?:(?<!data:)[^)])+\)|url\("(?:(?<!data:)[^)])+"\)|url\(\'(?:(?!data:)[^)])+\'\)))~', $content, $urlMatches);
-        if (!$srcFound && !$urlFound) {
-            return $content; // nothing to change
-        }
-        $stringsWithLinks = \array_merge($sourceMatches['sources'] ?? [], $urlMatches['urls'] ?? []);
-        $replacedContent = $content;
-        foreach ($stringsWithLinks as $stringWithLink) {
-            $maybeQuotedLink = \preg_replace('~src|url\(([^)]+)\)~', '$1', $stringWithLink);
-            $link = \trim($maybeQuotedLink, '"\'');
-            $md5 = $this->getFileMd5($link, $documentRootDir, $sourceFile);
-            if (!$md5) {
-                continue;
-            }
-            $versionedLink = $this->appendVersionHashToLink($link, $md5);
-            if ($versionedLink === $link) {
-                continue; // nothing changed for current link
-            }
-            $stringWithVersionedLink = \str_replace($link, $versionedLink, $stringWithLink);
-            // do NOT replace link directly in content to avoid misleading replacement on places without wrapping url or src
-            $replacedContent = \str_replace($stringWithLink, $stringWithVersionedLink, $replacedContent);
-        }
-
-        return $replacedContent;
-    }
-
-    private function getFileMd5(string $link, string $documentRootDir, string $sourceFile): ?string
-    {
-        $parts = \parse_url($link);
-        $localPath = $parts['path'] ?? '';
-        if ($localPath === '') {
-            \trigger_error("Can not parse URL from link '{$link}", E_USER_WARNING);
-
-            return null;
-        }
-        $file = $documentRootDir . '/' . \ltrim($localPath, '/');
-        if (!\is_readable($file)) {
-            \trigger_error(
-                "Can not read asset file {$file} figured from link '{$parts['path']} in file {$sourceFile}",
-                E_USER_WARNING
-            );
-
-            return null;
-        }
-
-        return \md5_file($file);
-    }
-
-    private function appendVersionHashToLink(string $link, string $version): string
-    {
-        $parsed = \parse_url($link);
-        $queryString = \urldecode($parsed['query'] ?? '');
-        $queryChunks = explode('&', $queryString);
-        $queryParts = [];
-        foreach ($queryChunks as $queryChunk) {
-            if ($queryChunk === '') {
-                continue;
-            }
-            [$name, $value] = \explode('=', $queryChunk);
-            $queryParts[$name] = $value;
-        }
-        if (!empty($queryParts[Request::VERSION]) && $queryParts[Request::VERSION] === $version) {
-            return $link; // nothing to change
-        }
-        $queryParts[Request::VERSION] = $version;
-        $newQueryChunks = [];
-        foreach ($queryParts as $name => $value) {
-            $newQueryChunks[] = \urlencode($name) . '=' . \urlencode($value);
-        }
-        $versionedQuery = \implode('&', $newQueryChunks);
-        $fragment = '';
-        if (($parsed['fragment'] ?? '') !== '') {
-            $fragment .= '#' . $parsed['fragment'];
-        }
-        if ($fragment !== '') {
-            $versionedQuery .= '#' . $fragment;
-        }
-        $withoutQuery = $link;
-        $queryStartsAt = \strpos($link, '?');
-        if ($queryStartsAt !== false) {
-            $withoutQuery = \substr($link, 0, $queryStartsAt);
-        }
-
-        return $withoutQuery . '?' . $versionedQuery;
+        return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
     }
 }
