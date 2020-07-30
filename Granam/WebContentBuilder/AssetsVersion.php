@@ -144,7 +144,7 @@ class AssetsVersion extends StrictObject
         }, $folders);
     }
 
-    public function addVersionsToAssetLinksInContent(string $content, string $documentRootDir): string
+    private function addVersionsToAssetLinksInContent(string $content, string $documentRootDir): string
     {
         return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
     }
