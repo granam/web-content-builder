@@ -20,7 +20,7 @@ class ContentTest extends AbstractContentTest
     {
         $content = $this->createContent();
         self::assertStringContainsString(
-            preg_replace('~\s~', '', file_get_contents(__DIR__ . '/files/foo.html')),
+            preg_replace('~\s~', '', file_get_contents(__DIR__ . '/files/some_content.html')),
             preg_replace('~\s~', '', $content->getValue())
         );
     }
