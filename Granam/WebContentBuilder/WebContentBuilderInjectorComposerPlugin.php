@@ -5,6 +5,8 @@ use Composer\Composer;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\Installer\InstallerEvent;
+use Composer\Installer\InstallerEvents;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
@@ -20,6 +22,8 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
     /** @var IOInterface */
     private $io;
     /** @var bool */
+    private $shouldBeInjected = false;
+    /** @var bool */
     private $alreadyInjected = false;
     /** @var string */
     private $libraryPackageName;
@@ -27,8 +31,9 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
     public static function getSubscribedEvents(): array
     {
         return [
-            PackageEvents::POST_PACKAGE_INSTALL => 'plugInLibrary',
-            PackageEvents::POST_PACKAGE_UPDATE => 'plugInLibrary',
+            InstallerEvents::POST_DEPENDENCIES_SOLVING => 'plugInLibrary',
+            PackageEvents::POST_PACKAGE_INSTALL => 'prepareForPlugIn',
+            PackageEvents::POST_PACKAGE_UPDATE => 'prepareForPlugIn',
         ];
     }
 
@@ -43,9 +48,14 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
         $this->io = $io;
     }
 
-    public function plugInLibrary(PackageEvent $event)
+    public function prepareForPlugIn(PackageEvent $event)
     {
-        if ($this->alreadyInjected || !$this->isThisPackageChanged($event)) {
+        $this->shouldBeInjected = !$this->alreadyInjected && $this->isThisPackageChanged($event);
+    }
+
+    public function plugInLibrary(InstallerEvent $event)
+    {
+        if (!$this->shouldBeInjected || $this->alreadyInjected) {
             return;
         }
         $dirs = Dirs::createFromGlobals();
