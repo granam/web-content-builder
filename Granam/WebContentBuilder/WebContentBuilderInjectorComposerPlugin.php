@@ -51,6 +51,9 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
     public function prepareForPlugIn(PackageEvent $event)
     {
         $this->shouldBeInjected = !$this->alreadyInjected && $this->isThisPackageChanged($event);
+        if ($this->shouldBeInjected) {
+            $this->io->write("{$this->libraryPackageName} will be injected");
+        }
     }
 
     public function plugInLibrary(InstallerEvent $event)
