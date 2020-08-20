@@ -15,7 +15,7 @@ abstract class AbstractContentTest extends TestWithMockery
     private $dirs;
 
     /**
-     * @param Dirs $dirs
+     * @param Dirs|null $dirs
      * @return HtmlHelper|\Mockery\MockInterface
      */
     protected function createHtmlHelper(Dirs $dirs = null): HtmlHelper

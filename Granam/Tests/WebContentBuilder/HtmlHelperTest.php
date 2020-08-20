@@ -400,4 +400,25 @@ Bar
             ],
         ];
     }
+
+    /**
+     * @test
+     */
+    public function I_can_use_local_script()
+    {
+        $html = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<script type="text/javascript">/* just some local script */</script>
+</body>
+</html>
+HTML;
+        $htmlDocument = new HtmlDocument($html);
+
+        $htmlHelper = $this->getHtmlHelper();
+        $htmlHelper->addVersionHashToAssets($htmlDocument);
+
+        self::assertSame(trim($html), trim($htmlDocument->saveHTML()));
+    }
 }

@@ -336,6 +336,9 @@ class HtmlHelper extends StrictObject
     private function addVersionToAsset(Element $element, string $attributeName, string $masterDocumentRoot): void
     {
         $link = $element->getAttribute($attributeName);
+        if ($link === null) {
+            return;
+        }
         if ($this->isLinkExternal($link)) {
             return;
         }
