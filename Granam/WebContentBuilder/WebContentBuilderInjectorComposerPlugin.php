@@ -15,8 +15,6 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
 {
     public const LIBRARY_PACKAGE_NAME = 'granam/web-content-builder';
 
-    /** @var Composer */
-    private $composer;
     /** @var IOInterface */
     private $io;
     /** @var bool */
@@ -39,7 +37,6 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
 
     public function activate(Composer $composer, IOInterface $io): void
     {
-        $this->composer = $composer;
         $this->io = $io;
     }
 
@@ -86,4 +83,15 @@ class WebContentBuilderInjectorComposerPlugin extends StrictObject implements Pl
             $this->io->write('Those assets got versions to asset links: ' . \implode(', ', $changedFiles));
         }
     }
+
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        // nothing to do here
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        // nothing to do here
+    }
+
 }

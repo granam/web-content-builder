@@ -50,4 +50,13 @@ class WebContentBuilderInjectorComposerPluginTest extends AbstractContentTest
         self::assertSame(WebContentBuilderInjectorComposerPlugin::class, static::$composerConfig['extra']['class'], 'Expected current injector');
         self::assertArrayHasKey('composer-plugin-api', static::$composerConfig['require'], 'Injection requires composer plugin API package to works');
     }
+
+    /**
+     * @test
+     */
+    public function Injector_can_be_created()
+    {
+        $webContentBuilderInjectorComposerPlugin = new WebContentBuilderInjectorComposerPlugin();
+        self::assertNotEmpty($webContentBuilderInjectorComposerPlugin);
+    }
 }
