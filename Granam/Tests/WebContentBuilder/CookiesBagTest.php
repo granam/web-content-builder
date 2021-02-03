@@ -2,10 +2,10 @@
 
 namespace Granam\Tests\WebContentBuilder;
 
+use Granam\Tests\WebContentBuilder\Partials\AbstractContentTest;
 use Granam\WebContentBuilder\CookiesBag;
-use Granam\Tests\Tools\TestWithMockery;
 
-class CookiesBagTest extends TestWithMockery
+class CookiesBagTest extends AbstractContentTest
 {
     /**
      * @test
@@ -19,9 +19,9 @@ class CookiesBagTest extends TestWithMockery
         self::assertNull($cookiesBag->getCookie('foo'));
         self::assertTrue($cookiesBag->setCookie('foo', 'bar'));
         self::assertSame('bar', $cookiesBag->getCookie('foo'));
-        self::assertSame('bar', $_COOKIE['foo'] ?? false);
+        self::assertSame('bar', $_COOKIE['foo'] ?? '');
         self::assertTrue($cookiesBag->deleteCookie('foo'));
         self::assertNull($cookiesBag->getCookie('foo'));
-        self::assertFalse(\array_key_exists('foo', $_COOKIE), 'Cookie should be removed from global array as well');
+        self::assertArrayNotHasKey('foo', $_COOKIE, 'Cookie should be removed from global array as well');
     }
 }

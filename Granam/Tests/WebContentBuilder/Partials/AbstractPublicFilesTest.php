@@ -1,7 +1,7 @@
 <?php
 namespace Granam\Tests\WebContentBuilder\Partials;
 
-use Granam\Tests\Tools\TestWithMockery;
+use Granam\Tests\TestWithMockery;
 use Granam\WebContentBuilder\Web\AbstractPublicFiles;
 
 class AbstractPublicFilesTest extends TestWithMockery
@@ -47,9 +47,9 @@ class AbstractPublicFilesTest extends TestWithMockery
      */
     public function I_can_filter_non_unique_files(): void
     {
-        $mnifiedPublicFiles = $this->createPublicFiles(true /* prefer minified */);
+        $minifiedPublicFiles = $this->createPublicFiles(true /* prefer minified */);
         $files = ['/foo.min.js', '/foo.js', '/foo.js.map'];
-        $withoutNonMinified = $mnifiedPublicFiles->filterUniqueFiles($files);
+        $withoutNonMinified = $minifiedPublicFiles->filterUniqueFiles($files);
         self::assertSame(['/foo.min.js', '/foo.js.map'], $withoutNonMinified);
         $nonMinifiedPublicFiles = $this->createPublicFiles(/* prefer non-minified */);
         $withoutMinified = $nonMinifiedPublicFiles->filterUniqueFiles($files);

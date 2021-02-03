@@ -2,7 +2,7 @@
 
 namespace Granam\Tests\WebContentBuilder\Partials;
 
-use Granam\Tests\Tools\TestWithMockery;
+use Granam\Tests\TestWithMockery;
 use Granam\WebContentBuilder\Dirs;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\WebContentBuilder\Request;
@@ -13,6 +13,11 @@ abstract class AbstractContentTest extends TestWithMockery
 {
     /** @var Dirs */
     private $dirs;
+
+    protected static function getSutClass(string $sutTestClass = null, string $regexp = '~Tests\\\(.+)Test$~'): string
+    {
+        return parent::getSutClass($sutTestClass, $regexp);
+    }
 
     /**
      * @param Dirs|null $dirs
@@ -90,8 +95,7 @@ abstract class AbstractContentTest extends TestWithMockery
             self::assertNotEmpty($projectRootRealPath, 'Can not find out real path of project root ' . \var_export($this->getProjectRoot(), true));
             $libraryDocumentRootRealPath = \realpath(__DIR__ . '/../../../..');
             self::assertNotEmpty($libraryDocumentRootRealPath, 'Can not find out real path of library root ' . \var_export($libraryDocumentRootRealPath, true));
-            self::assertRegExp('~^web-content-builder$~', \basename($libraryDocumentRootRealPath), 'Expected different trailing dir of web content builder project root');
-
+            self::assertMatchesRegularExpression('~^web-content-builder$~', \basename($libraryDocumentRootRealPath), 'Expected different trailing dir of web content builder project root');
             $libraryChecked = $projectRootRealPath === $libraryDocumentRootRealPath;
         }
 

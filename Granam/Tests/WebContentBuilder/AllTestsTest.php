@@ -8,7 +8,6 @@ class AllTestsTest extends TestCase
 {
     /**
      * @test
-     * @throws \ReflectionException
      */
     public function Every_test_has_expected_namespace()
     {
