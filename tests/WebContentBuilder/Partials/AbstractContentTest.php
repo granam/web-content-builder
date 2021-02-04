@@ -93,7 +93,7 @@ abstract class AbstractContentTest extends TestWithMockery
         if ($libraryChecked === null) {
             $projectRootRealPath = \realpath($this->getProjectRoot());
             self::assertNotEmpty($projectRootRealPath, 'Can not find out real path of project root ' . \var_export($this->getProjectRoot(), true));
-            $libraryDocumentRootRealPath = \realpath(__DIR__ . '/../../../..');
+            $libraryDocumentRootRealPath = \realpath(__DIR__ . '/../../..');
             self::assertNotEmpty($libraryDocumentRootRealPath, 'Can not find out real path of library root ' . \var_export($libraryDocumentRootRealPath, true));
             self::assertMatchesRegularExpression('~^web-content-builder$~', \basename($libraryDocumentRootRealPath), 'Expected different trailing dir of web content builder project root');
             $libraryChecked = $projectRootRealPath === $libraryDocumentRootRealPath;
