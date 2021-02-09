@@ -214,7 +214,7 @@ class HtmlHelper extends StrictObject
         $nonEmptyBlockChild = null;
         /** @var Element $childNode */
         foreach ($element->childNodes as $childNode) {
-            if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text'], true)) {
+            if (!in_array($childNode->nodeName, ['span', 'strong', 'b', 'i', '#text', '#comment'], true)) {
                 if (!$nonEmptyBlockChild && $this->isNonEmptyBlockElement($childNode)) {
                     $nonEmptyBlockChild = $childNode;
                 }
@@ -236,25 +236,25 @@ class HtmlHelper extends StrictObject
         }
     }
 
-    private function isNonEmptyBlockElement(Element $element): bool
+    private function isNonEmptyBlockElement(\DOMElement $element): bool
     {
         return ($element->nodeName === 'div' && trim($element->textContent) !== '')
             || $this->isOrHasNonEmptyTableHeadCellOrCaption($element);
     }
 
-    private function isOrHasNonEmptyTableHeadCellOrCaption(Element $element)
+    private function isOrHasNonEmptyTableHeadCellOrCaption(\DOMElement $element): bool
     {
         return (in_array($element->nodeName, ['th', 'caption'], true) && trim($element->textContent) !== '')
             || (in_array($element->nodeName, ['table', 'thead', 'tr'], true) && ($this->hasNonEmptyCaption($element) || $this->hasNonEmptySingleHeadCell($element)));
     }
 
-    private function hasNonEmptyCaption(Element $element): bool
+    private function hasNonEmptyCaption(\DOMElement $element): bool
     {
         $captions = $element->getElementsByTagName('caption');
         return count($captions) === 1 && trim($captions[0]->textContent) !== '';
     }
 
-    private function hasNonEmptySingleHeadCell(Element $element): bool
+    private function hasNonEmptySingleHeadCell(\DOMElement $element): bool
     {
         $tableHeadCells = $element->getElementsByTagName('th');
         return count($tableHeadCells) === 1 && trim($tableHeadCells[0]->textContent) !== '';
@@ -283,7 +283,6 @@ class HtmlHelper extends StrictObject
             );
         }
 
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $elementById;
     }
 

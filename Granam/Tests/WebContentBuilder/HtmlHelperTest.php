@@ -85,11 +85,11 @@ HTML
 
     /**
      * @test
-     * @dataProvider provideHtmlWithId
+     * @dataProvider provideHtmlWithIdForAnchors
      * @param string $topId
      * @param string $htmlWithId
      * @param array $expectedAnchors
-     * @param string $expectedHtmlWithId = null
+     * @param string|null $expectedHtmlWithId
      */
     public function I_can_wrap_id_by_anchor_to_it(string $topId, string $htmlWithId, array $expectedAnchors, string $expectedHtmlWithId = null): void
     {
@@ -121,7 +121,7 @@ HTML
         }
     }
 
-    public function provideHtmlWithId(): array
+    public function provideHtmlWithIdForAnchors(): array
     {
         return [
             'div with ID' => ['some_id', '<div id="some_id">Foo</div>', ['<a href="#some_id">Foo</a>']],
@@ -245,8 +245,13 @@ HTML
                 ,
                 [
                     '<a href="#with_div_and_sub_div_and_table_and_sub_div">Stabilizace = Zrč + stupeň archetypu + 2k6<span class="upper-index">+</span>:</a>',
-                    '<a href="http://pph.drdplus.loc/#tabulka_casu" target="_blank" class="external-url">2 kola (+6)</a>'
+                    '<a href="http://pph.drdplus.loc/#tabulka_casu" target="_blank" class="external-url">2 kola (+6)</a>',
                 ],
+            ],
+            'with HTML comment' => [
+                'world_splitting_comment',
+                '<div id="world_splitting_comment"><!-- Love can be sold, but not bought --></div>',
+                ['<a href="#world_splitting_comment"><!-- Love can be sold, but not bought --></a>']
             ],
         ];
     }
