@@ -2,7 +2,11 @@
 
 namespace Granam\Tests\WebContentBuilder\Partials;
 
+<<<<<<< HEAD:Granam/Tests/WebContentBuilder/Partials/AbstractContentTest.php
 use Granam\Tests\TestWithMockery;
+=======
+use Granam\TestWithMockery\TestWithMockery;
+>>>>>>> b82cff2... Fix crash on injecting an ID to a element with a HTML comment:tests/WebContentBuilder/Partials/AbstractContentTest.php
 use Granam\WebContentBuilder\Dirs;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\WebContentBuilder\Request;
@@ -11,11 +15,6 @@ use Gt\Dom\HTMLDocument;
 
 abstract class AbstractContentTest extends TestWithMockery
 {
-    protected static function getSutClass(string $sutTestClass = null, string $regexp = '~Tests\\\(.+)Test$~'): string
-    {
-        return parent::getSutClass($sutTestClass, $regexp);
-    }
-
     /** @var Dirs */
     private $dirs;
 

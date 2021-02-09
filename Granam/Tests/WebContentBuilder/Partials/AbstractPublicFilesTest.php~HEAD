@@ -1,7 +1,11 @@
 <?php
 namespace Granam\Tests\WebContentBuilder\Partials;
 
+<<<<<<< HEAD:Granam/Tests/WebContentBuilder/Partials/AbstractPublicFilesTest.php
 use Granam\Tests\TestWithMockery;
+=======
+use Granam\TestWithMockery\TestWithMockery;
+>>>>>>> b82cff2... Fix crash on injecting an ID to a element with a HTML comment:tests/WebContentBuilder/Partials/AbstractPublicFilesTest.php
 use Granam\WebContentBuilder\Web\AbstractPublicFiles;
 
 class AbstractPublicFilesTest extends TestWithMockery

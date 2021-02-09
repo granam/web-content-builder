@@ -21,9 +21,10 @@
     "php": ">=7.1",
     "ext-dom": "*",
     "ext-json": "*",
-    "composer-plugin-api": "^1.1",
+    "composer-plugin-api": "^1.1|^2.0",
     "erusev/parsedown": "^1.7",
     "granam/string": "^4.0",
+    "granam/test-with-mockery": "^1.0",
     "phpgt/dom": "^2.1",
     "piwik/device-detector": "^3.12"
   },

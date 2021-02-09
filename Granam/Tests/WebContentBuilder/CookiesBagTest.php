@@ -2,10 +2,10 @@
 
 namespace Granam\Tests\WebContentBuilder;
 
+use Granam\Tests\WebContentBuilder\Partials\AbstractContentTest;
 use Granam\WebContentBuilder\CookiesBag;
-use Granam\Tests\Tools\TestWithMockery;
 
-class CookiesBagTest extends TestWithMockery
+class CookiesBagTest extends AbstractContentTest
 {
     /**
      * @test
