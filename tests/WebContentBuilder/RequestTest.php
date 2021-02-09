@@ -4,7 +4,7 @@ namespace Granam\Tests\WebContentBuilder;
 
 use DeviceDetector\Parser\Bot;
 use Granam\WebContentBuilder\Request;
-use Granam\Tests\TestWithMockery;
+use Granam\TestWithMockery\TestWithMockery;
 
 class RequestTest extends TestWithMockery
 {

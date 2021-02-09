@@ -2,7 +2,7 @@
 
 namespace Granam\Tests\WebContentBuilder\Partials;
 
-use Granam\Tests\TestWithMockery;
+use Granam\TestWithMockery\TestWithMockery;
 use Granam\WebContentBuilder\Dirs;
 use Granam\WebContentBuilder\HtmlHelper;
 use Granam\WebContentBuilder\Request;
