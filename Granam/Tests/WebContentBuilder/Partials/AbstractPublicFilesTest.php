@@ -1,7 +1,7 @@
 <?php
 namespace Granam\Tests\WebContentBuilder\Partials;
 
-use Granam\TestWithMockery\TestWithMockery;
+use Granam\Tests\TestWithMockery;
 use Granam\WebContentBuilder\Web\AbstractPublicFiles;
 
 class AbstractPublicFilesTest extends TestWithMockery
