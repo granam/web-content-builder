@@ -413,8 +413,7 @@ Bar
     {
         $html = <<<HTML
 <!DOCTYPE html>
-<html lang="en">
-<body>
+<html lang="en"><body>
 <script type="text/javascript">/* just some local script */</script>
 </body>
 </html>
@@ -424,6 +423,17 @@ HTML;
         $htmlHelper = $this->getHtmlHelper();
         $htmlHelper->addVersionHashToAssets($htmlDocument);
 
-        self::assertSame(trim($html), trim($htmlDocument->saveHTML()));
+        self::assertSame($this->unifyHtmlForTravisCI($html), $this->unifyHtmlForTravisCI($htmlDocument->saveHTML()));
+    }
+
+    /**
+     * Same code on Travis CI runtime steals some new lines by saveHTML()
+     * '<html lang="en">
+     * <body>' becomes '<html lang="en"><body>'
+     */
+    private function unifyHtmlForTravisCI(string $html): string
+    {
+        $trimmed = trim($html);
+        return preg_replace('~(<[^>]+>)(<[^>]+>)~', "$1\n$2", $trimmed);
     }
 }
