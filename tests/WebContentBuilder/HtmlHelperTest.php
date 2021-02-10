@@ -108,7 +108,11 @@ HTML
         $elementWithId = $withAnchorsOnIds->getElementById(\html_entity_decode($topId));
         self::assertNotEmpty($elementWithId, "No element found by given top ID '$topId'");
         $anchors = $elementWithId->getElementsByTagName('a');
-        self::assertSame(\count($expectedAnchors), \count($anchors), 'Expected different count of anchors inside ' . $withAnchorsOnIds->saveHTML());
+        self::assertCount(
+            count($expectedAnchors),
+            $anchors,
+            'Expected different count of anchors inside ' . $withAnchorsOnIds->saveHTML()
+        );
         foreach ($expectedAnchors as $index => $expectedAnchor) {
             self::assertSame(
                 $expectedAnchor,
@@ -251,7 +255,7 @@ HTML
             'with HTML comment' => [
                 'world_splitting_comment',
                 '<div id="world_splitting_comment"><!-- Love can be sold, but not bought --></div>',
-                ['<a href="#world_splitting_comment"><!-- Love can be sold, but not bought --></a>']
+                ['<a href="#world_splitting_comment"><!-- Love can be sold, but not bought --></a>'],
             ],
         ];
     }
@@ -319,7 +323,6 @@ HTML
 </html>
 HTML
         ));
-        /** @var Element $english */
         $english = $unified->getElementById('english');
         self::assertNotEmpty($english);
         self::assertSame(
@@ -331,7 +334,6 @@ HTML
             ,
             preg_replace('~(\s*\n\s*)+~', "\n", trim($english->prop_get_innerHTML()))
         );
-        /** @var Element $czech */
         $czech = $unified->getElementById('czech');
         self::assertNotEmpty($czech);
         self::assertSame(
