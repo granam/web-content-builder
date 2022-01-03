@@ -118,7 +118,7 @@ class AssetsVersionTest extends AbstractContentTest
     /**
      * @test
      */
-    public function Missing_asset_triggers_warning(): void
+    public function It_triggers_just_a_warning(): void
     {
         $assetsVersionClass = static::getSutClass();
         /** @var AssetsVersion $assetsVersion */

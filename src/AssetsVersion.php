@@ -143,11 +143,6 @@ class AssetsVersion extends StrictObject
 
     private function addVersionsToAssetLinksInContent(string $content, string $documentRootDir): string
     {
-        try {
-            return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
-        } catch (\Throwable $throwable) {
-            trigger_error($throwable->getMessage() . ' (' . $throwable->getTraceAsString() . ')', E_USER_WARNING);
-            return '';
-        }
+        return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
     }
 }
