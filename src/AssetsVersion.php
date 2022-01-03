@@ -18,9 +18,6 @@ class AssetsVersion extends StrictObject
 
     public function __construct(bool $scanDirsForCss = null, bool $scanDirsForHtml = null, bool $scanDirsForMd = null)
     {
-        $this->scanDirsForCss = false;
-        $this->scanDirsForHtml = false;
-        $this->scanDirsForMarkdown = false;
         if ($scanDirsForCss === null && $scanDirsForHtml === null && $scanDirsForMd === null) { // default is to scan for everything
             $this->scanDirsForCss = true;
             $this->scanDirsForHtml = true;
@@ -50,16 +47,16 @@ class AssetsVersion extends StrictObject
     ): array
     {
         $changedFiles = [];
-        $documentRootDir = \rtrim($documentRootDir, '/');
+        $documentRootDir = rtrim($documentRootDir, '/');
         $confirmedFilesToEdit = $this->getConfirmedFilesToEdit($dirsToScan, $excludeDirs, $filesToEdit);
         foreach ($confirmedFilesToEdit as $confirmedFileToEdit) {
-            $content = \file_get_contents($confirmedFileToEdit);
+            $content = file_get_contents($confirmedFileToEdit);
             if ($content === false) {
-                \trigger_error("File {$confirmedFileToEdit} is not readable, has to skip it", E_USER_WARNING);
+                trigger_error("File {$confirmedFileToEdit} is not readable, has to skip it", E_USER_WARNING);
                 continue;
             }
             if ($content === '') {
-                \trigger_error("File {$confirmedFileToEdit} is empty", E_USER_WARNING);
+                trigger_error("File {$confirmedFileToEdit} is empty", E_USER_WARNING);
                 continue;
             }
             $replacedContent = $this->addVersionsToAssetLinksInContent($content, $documentRootDir);
@@ -70,8 +67,8 @@ class AssetsVersion extends StrictObject
                 $changedFiles[] = $confirmedFileToEdit;
                 continue;
             }
-            if (!\file_put_contents($confirmedFileToEdit, $replacedContent)) {
-                \trigger_error("Can not write to {$confirmedFileToEdit}", E_USER_WARNING);
+            if (!file_put_contents($confirmedFileToEdit, $replacedContent)) {
+                trigger_error("Can not write to {$confirmedFileToEdit}", E_USER_WARNING);
                 continue;
             }
             $changedFiles[] = $confirmedFileToEdit;
@@ -95,7 +92,7 @@ class AssetsVersion extends StrictObject
             $wantedFileExtensions[] = 'md';
         }
         $excludeDirs = $this->unifyFolderNames($excludeDirs);
-        $wantedFileExtensionsRegexp = '(' . \implode('|', $wantedFileExtensions) . ')';
+        $wantedFileExtensionsRegexp = '(' . implode('|', $wantedFileExtensions) . ')';
         foreach ($dirsToScan as $dirToScan) {
             $directoryIterator = new \RecursiveDirectoryIterator(
                 $dirToScan,
@@ -108,8 +105,8 @@ class AssetsVersion extends StrictObject
             /** @var \FilesystemIterator $folder */
             foreach (new \RecursiveIteratorIterator($directoryIterator) as $folderName => $folder) {
                 $pathName = $folder->getPathname();
-                $dirPath = \dirname($pathName);
-                if (\preg_match('~/vendor($|/.+)~', $dirPath)) {
+                $dirPath = dirname($pathName);
+                if (preg_match('~/vendor($|/.+)~', $dirPath)) {
                     continue;
                 }
                 foreach ($excludeDirs as $excludeDir) {
@@ -117,35 +114,40 @@ class AssetsVersion extends StrictObject
                         continue 2; // next folder
                     }
                 }
-                if (\preg_match('~[.]' . $wantedFileExtensionsRegexp . '$~', $folderName)) {
+                if (preg_match('~[.]' . $wantedFileExtensionsRegexp . '$~', $folderName)) {
                     $confirmedFilesToEdit[] = $pathName;
                 }
             }
         }
         foreach ($filesToEdit as $fileToEdit) {
-            if (!\is_file($fileToEdit)) {
-                \trigger_error("A file does not exists: {$fileToEdit}", E_USER_WARNING);
+            if (!is_file($fileToEdit)) {
+                trigger_error("A file does not exists: {$fileToEdit}", E_USER_WARNING);
                 continue;
             }
-            if (!\is_readable($fileToEdit)) {
-                \trigger_error("A file can not be read: {$fileToEdit}", E_USER_WARNING);
+            if (!is_readable($fileToEdit)) {
+                trigger_error("A file can not be read: {$fileToEdit}", E_USER_WARNING);
                 continue;
             }
             $confirmedFilesToEdit[] = $fileToEdit;
         }
 
-        return \array_unique($confirmedFilesToEdit);
+        return array_unique($confirmedFilesToEdit);
     }
 
     private function unifyFolderNames(array $folders): array
     {
-        return \array_map(function (string $folder) {
-            return \rtrim(\str_replace('\\', '/', $folder), '/');
+        return array_map(static function (string $folder) {
+            return rtrim(str_replace('\\', '/', $folder), '/');
         }, $folders);
     }
 
     private function addVersionsToAssetLinksInContent(string $content, string $documentRootDir): string
     {
-        return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
+        try {
+            return $this->assetsVersionInjector->addVersionsToAssetLinks($content, $documentRootDir);
+        } catch (\Throwable $throwable) {
+            trigger_error($throwable->getMessage() . ' (' . $throwable->getTraceAsString() . ')', E_USER_WARNING);
+            return '';
+        }
     }
 }

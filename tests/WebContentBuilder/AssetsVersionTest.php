@@ -49,8 +49,7 @@ class AssetsVersionTest extends AbstractContentTest
      */
     public function Can_inject_versions_to_assets(): void
     {
-        $assetsVersion = new AssetsVersion();
-        $changedFiles = $assetsVersion->addVersionsToAssetLinks(
+        $changedFiles = (new AssetsVersion())->addVersionsToAssetLinks(
             $this->getProjectRoot(),
             [$this->getProjectRoot() . '/web'],
             [],
@@ -114,6 +113,49 @@ class AssetsVersionTest extends AbstractContentTest
         $command = escapeshellarg($this->getBinAssetsFile()) . ' --dir=. --css --html --md --dry-run 2>&1';
         exec($command, $output, $return);
         self::assertSame(0, $return, $command . ' failed with output ' . implode("\n", $output));
+    }
+
+    /**
+     * @test
+     */
+    public function Missing_asset_triggers_warning(): void
+    {
+        $assetsVersionClass = static::getSutClass();
+        /** @var AssetsVersion $assetsVersion */
+        $assetsVersion = new $assetsVersionClass(true /* scan for CSS */);
+
+        $rootDir = sys_get_temp_dir();
+        $cssDir = $rootDir . '/' . uniqid(__FUNCTION__, true);
+        if (!is_dir($cssDir) && !@mkdir($cssDir) && !is_dir($cssDir)) {
+            self::fail("Can not create testing dir $cssDir");
+        }
+        $cssFile = $cssDir . '/with_missing_asset.css';
+        file_put_contents($cssFile, <<<CSS
+body {
+    background-image: url("neverwhere.png");
+}
+CSS
+        );
+
+        $this->expectWarning();
+        $this->expectWarningMessage('neverwhere.png');
+
+        $changedFiles = $assetsVersion->addVersionsToAssetLinks(
+            $rootDir,
+            [$cssDir],
+            [],
+            [],
+            true // dry run
+        );
+
+        @unlink($cssFile);
+        @rmdir($cssDir);
+
+        self::assertCount(
+            0,
+            $changedFiles,
+            "Expected single CSS file to be transpiled despite its missing asset"
+        );
     }
 
 }

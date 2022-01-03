@@ -30,6 +30,7 @@
     "composer-plugin-api": "^1.1|^2.0",
     "erusev/parsedown": "^1.7",
     "granam/assets-version": "^2.0",
+    "granam/strict-object": "^3.1",
     "granam/string": "^4.0",
     "matomo/device-detector": "^4.1",
     "phpgt/dom": "^2.1"
